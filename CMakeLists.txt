@@ -2,6 +2,12 @@
 # Distributed under the Boost Software License, Version 1.0.
 # https://www.boost.org/LICENSE_1_0.txt
 
+cmake_minimum_required (VERSION 3.23)
+
+project (k3_k3tchup
+         VERSION 0
+         LANGUAGES CXX)
+
 add_library(framework STATIC
     src/framework/error.cpp
     src/framework/fixture.cpp
