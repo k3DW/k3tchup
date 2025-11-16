@@ -41,12 +41,13 @@ int runner::exec(const int argc, const char* const argv[])
     if (args[1] == "--help")
     {
         std::cout <<
-            "`<no-args>` => Same as `run`\n"
-            "`list` => List all tests\n"
-            "`list` \"<file>\" => List all tests and output to the file\n"
-            "`run` => Run all tests\n"
-            "`run \"<fixture>\" => Run all tests in the given fixture\n"
-            "`run \"<fixture>\" \"<test>\" => Run the given test\n"
+            "Usage:\n"
+            "  <no-args>            => Same as `run`\n"
+            "  list                 => List all tests\n"
+            "  list <file>          => List all tests and output to the given file\n"
+            "  run                  => Run all tests\n"
+            "  run <fixture>        => Run all tests in the given fixture\n"
+            "  run <fixture> <test> => Run the given test\n"
         ;
         return EXIT_SUCCESS;
     }
