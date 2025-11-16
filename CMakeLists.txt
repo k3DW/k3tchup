@@ -8,6 +8,16 @@ project (k3_k3tchup
          VERSION 0
          LANGUAGES CXX)
 
+set(K3TCHUP_CXX_STANDARD "detect" CACHE STRING "C++ standard to use")
+set(K3TCHUP_CXX_WARNINGS "detect" CACHE STRING "C++ compiler warnings to enable")
+
+if (K3TCHUP_CXX_STANDARD)
+    include(cmake/standard/${K3TCHUP_CXX_STANDARD}.cmake)
+endif()
+if (K3TCHUP_CXX_WARNINGS)
+    include(cmake/warnings/${K3TCHUP_CXX_WARNINGS}.cmake)
+endif()
+
 add_library(k3_k3tchup STATIC
     src/k3/k3tchup/error.cpp
     src/k3/k3tchup/fixture.cpp
