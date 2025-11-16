@@ -25,6 +25,7 @@ add_library(k3_k3tchup STATIC
     src/k3/k3tchup/runner.cpp
     src/k3/k3tchup/test.cpp
 )
+add_library(k3::k3tchup ALIAS k3_k3tchup)
 target_sources(k3_k3tchup PUBLIC FILE_SET headers TYPE HEADERS FILES
     include/k3/k3tchup.hpp
     include/k3/k3tchup/assert.hpp
