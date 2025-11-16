@@ -2,8 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#ifndef K3_TOK3N_TESTS_FRAMEWORK_RUNNER_HPP
-#define K3_TOK3N_TESTS_FRAMEWORK_RUNNER_HPP
+#ifndef K3_K3TCHUP_RUNNER_HPP
+#define K3_K3TCHUP_RUNNER_HPP
 
 #include <map>
 #include <string_view>
@@ -31,4 +31,4 @@ private:
 
 } // namespace k3::testing
 
-#endif // K3_TOK3N_TESTS_FRAMEWORK_RUNNER_HPP
+#endif // K3_K3TCHUP_RUNNER_HPP

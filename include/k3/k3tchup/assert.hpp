@@ -2,8 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#ifndef K3_TOK3N_TESTS_FRAMEWORK_ASSERT_HPP
-#define K3_TOK3N_TESTS_FRAMEWORK_ASSERT_HPP
+#ifndef K3_K3TCHUP_ASSERT_HPP
+#define K3_K3TCHUP_ASSERT_HPP
 
 #if defined(__clang__) and (__clang_major__ <= 16)
 #define K3_TESTING_CT_BOOL_(B) ([&] { return bool{(B)}; }())
@@ -87,4 +87,4 @@
 #define EXPECT(CONDITION) \
     EXPECT_COMPILE_AND_RUN_TIME(CONDITION)
 
-#endif // K3_TOK3N_TESTS_FRAMEWORK_ASSERT_HPP
+#endif // K3_K3TCHUP_ASSERT_HPP

@@ -2,13 +2,13 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#ifndef K3_TOK3N_TESTS_FRAMEWORK_TEST_HPP
-#define K3_TOK3N_TESTS_FRAMEWORK_TEST_HPP
+#ifndef K3_K3TCHUP_TEST_HPP
+#define K3_K3TCHUP_TEST_HPP
 
 #include <iosfwd>
 #include <string>
 #include <string_view>
-#include "framework/hash.hpp"
+#include <k3/k3tchup/hash.hpp>
 
 namespace k3::testing {
 
@@ -58,4 +58,4 @@ private:
     };                                                                                \
     void test_impl_<::k3::testing::simple_hash(FIXTURE_NAME, NAME)>::_run()
 
-#endif // K3_TOK3N_TESTS_FRAMEWORK_TEST_HPP
+#endif // K3_K3TCHUP_TEST_HPP
