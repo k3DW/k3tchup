@@ -9,7 +9,7 @@
 #include <fstream>
 #include <optional>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 runner& runner::get()
 {
@@ -157,4 +157,4 @@ RUN_ALL_TESTS:
     }
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup

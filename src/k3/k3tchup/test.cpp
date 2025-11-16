@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 test_result test::run(std::ostream& os) const
 {
@@ -19,4 +19,4 @@ test_result test::run(std::ostream& os) const
     return result;
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup

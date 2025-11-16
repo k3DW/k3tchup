@@ -8,7 +8,7 @@
 #include <map>
 #include <string_view>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 class test;
 class fixture;
@@ -29,6 +29,6 @@ private:
     std::map<std::string_view, fixture*> _fixtures;
 };
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 #endif // K3_K3TCHUP_RUNNER_HPP

@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 struct error;
 
@@ -128,6 +128,6 @@ private:
     static inline std::size_t _total_errors = 0;
 };
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 #endif // K3_K3TCHUP_TESTRESULT_HPP

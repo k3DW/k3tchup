@@ -5,7 +5,7 @@
 #include <k3/k3tchup.hpp>
 #include <iostream>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 namespace {
 
@@ -71,4 +71,4 @@ void print(std::ostream& os, const error& e)
     }
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup

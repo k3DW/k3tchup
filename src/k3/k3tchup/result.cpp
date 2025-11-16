@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 void test_result::print_brief(std::ostream& os) const
 {
@@ -101,4 +101,4 @@ std::size_t context::total_errors()
     return _total_errors;
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup

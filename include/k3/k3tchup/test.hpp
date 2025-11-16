@@ -10,7 +10,7 @@
 #include <string_view>
 #include <k3/k3tchup/hash.hpp>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 struct test_result;
 
@@ -35,7 +35,7 @@ private:
     func_type _func;
 };
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 
 
@@ -45,17 +45,17 @@ private:
     template <std::size_t hash>                                                       \
     class fixture_impl_;                                                              \
     template <>                                                                       \
-    class test_impl_<::k3::testing::simple_hash(FIXTURE_NAME, NAME)>                  \
+    class test_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME, NAME)>                  \
     {                                                                                 \
     private:                                                                          \
         static_assert(                                                                \
-            std::is_base_of_v<::k3::testing::fixture,                                 \
-                fixture_impl_<::k3::testing::simple_hash(FIXTURE_NAME)>>,             \
+            std::is_base_of_v<::k3::k3tchup::fixture,                                 \
+                fixture_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME)>>,             \
             "Fixture \"" FIXTURE_NAME "\" has not been declared in this namespace."); \
         static void _run();                                                           \
-        static inline const bool _init = ::k3::testing::runner::get()                 \
-            .add(FIXTURE_NAME, ::k3::testing::test(NAME, &_run));                     \
+        static inline const bool _init = ::k3::k3tchup::runner::get()                 \
+            .add(FIXTURE_NAME, ::k3::k3tchup::test(NAME, &_run));                     \
     };                                                                                \
-    void test_impl_<::k3::testing::simple_hash(FIXTURE_NAME, NAME)>::_run()
+    void test_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME, NAME)>::_run()
 
 #endif // K3_K3TCHUP_TEST_HPP

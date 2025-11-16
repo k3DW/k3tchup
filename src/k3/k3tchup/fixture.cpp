@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 void fixture::add_test(test&& t)
 {
@@ -56,4 +56,4 @@ void fixture::list(std::ostream& os) const
     }
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup

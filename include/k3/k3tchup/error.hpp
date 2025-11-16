@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 enum class error_time
 {
@@ -38,6 +38,6 @@ struct error
 
 void print(std::ostream& os, const error& e);
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 #endif // K3_K3TCHUP_ERROR_HPP

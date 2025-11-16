@@ -8,7 +8,7 @@
 #include <bit>
 #include <string_view>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 constexpr std::size_t simple_hash(std::string_view s)
 {
@@ -25,6 +25,6 @@ constexpr std::size_t simple_hash(std::string_view s1, std::string_view s2)
     return std::rotl(simple_hash(s1), 1) + simple_hash(s2);
 }
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 #endif // K3_K3TCHUP_HASH_HPP

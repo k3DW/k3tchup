@@ -12,7 +12,7 @@
 #include <k3/k3tchup/hash.hpp>
 #include <k3/k3tchup/test.hpp>
 
-namespace k3::testing {
+namespace k3::k3tchup {
 
 struct fixture_result;
 
@@ -47,7 +47,7 @@ private:
     std::unordered_map<std::string_view, test> _tests;
 };
 
-} // namespace k3::testing
+} // namespace k3::k3tchup
 
 
 
@@ -55,12 +55,12 @@ private:
     template <std::size_t hash>                                                           \
     class fixture_impl_;                                                                  \
     template <>                                                                           \
-    class fixture_impl_<::k3::testing::simple_hash(NAME)>                                 \
-        : private ::k3::testing::fixture                                                  \
+    class fixture_impl_<::k3::k3tchup::simple_hash(NAME)>                                 \
+        : private ::k3::k3tchup::fixture                                                  \
     {                                                                                     \
     private:                                                                              \
-        static inline bool _init = ::k3::testing::runner::get()                           \
-            .add(::k3::testing::fixture::global<::k3::testing::simple_hash(NAME)>(NAME)); \
+        static inline bool _init = ::k3::k3tchup::runner::get()                           \
+            .add(::k3::k3tchup::fixture::global<::k3::k3tchup::simple_hash(NAME)>(NAME)); \
     }
 
 #endif // K3_K3TCHUP_FIXTURE_HPP
