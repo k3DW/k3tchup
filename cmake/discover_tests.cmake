@@ -1,17 +1,30 @@
-# Copyright 2024 Braden Ganetsky
-# Distributed under the Boost Software License, Version 1.0.
-# https://www.boost.org/LICENSE_1_0.txt
+macro(k3_k3tchup_discover_tests target assembly_name)
 
-# Expected variables:
-#   ASSEMBLY_NAME
-#   TEST_TARGET
-#   TEST_DIRECTORY
-#   LIST_OF_TESTS_FILE
+    set(generated_file "${CMAKE_CURRENT_BINARY_DIR}/${target}.k3tchup.list_of_tests.cmake")
 
-file(READ "${LIST_OF_TESTS_FILE}" list_of_tests_contents)
-string(REGEX REPLACE
-    "(\"[^\r\n]*\") - (\"[^\r\n]*\")([\r\n]+)"
-    "add_test([=[\"${ASSEMBLY_NAME} - \\1 - \\2\"]=] ${TEST_DIRECTORY}/${TEST_TARGET}${CMAKE_EXECUTABLE_SUFFIX} \"run\" \\1 \\2)\\3"
-    list_of_tests_contents "${list_of_tests_contents}"
-)
-file(WRITE "${LIST_OF_TESTS_FILE}" "${list_of_tests_contents}")
+    # Must grab it like this because we're inside macro
+    get_property(_k3tchup_dir TARGET k3_k3tchup PROPERTY SOURCE_DIR)
+
+    add_custom_command(
+        TARGET ${target} POST_BUILD
+        COMMAND ${target} list ${generated_file}
+        COMMAND ${CMAKE_COMMAND}
+            -D "ASSEMBLY_NAME=${assembly_name}"
+            -D "TEST_TARGET=${target}"
+            -D "TEST_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}"
+            -D "LIST_OF_TESTS_FILE=${generated_file}"
+            -P "${_k3tchup_dir}/cmake/discover_tests_script.cmake"
+        BYPRODUCTS ${generated_file}
+        VERBATIM
+    )
+
+    add_custom_command(
+        TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+            -D "TEST_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}"
+            -D "LIST_OF_TESTS_FILE=${generated_file}"
+            -P "${_k3tchup_dir}/cmake/include_tests_script.cmake"
+        VERBATIM
+    )
+
+endmacro()
