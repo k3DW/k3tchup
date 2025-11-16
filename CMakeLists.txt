@@ -70,3 +70,5 @@ macro(tok3n_discover_tests target assembly_name)
     )
 
 endmacro()
+
+add_subdirectory(examples)

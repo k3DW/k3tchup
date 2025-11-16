@@ -1,0 +1,2 @@
+add_executable(example_run_time_optional run_time_optional.cpp)
+target_link_libraries(example_run_time_optional k3::k3tchup)
