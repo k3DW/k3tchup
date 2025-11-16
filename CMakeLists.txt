@@ -28,6 +28,7 @@ add_library(k3_k3tchup STATIC
 add_library(k3::k3tchup ALIAS k3_k3tchup)
 target_sources(k3_k3tchup PUBLIC FILE_SET headers TYPE HEADERS FILES
     include/k3/k3tchup.hpp
+    include/k3/k3tchup_main.hpp
     include/k3/k3tchup/assert.hpp
     include/k3/k3tchup/error.hpp
     include/k3/k3tchup/fixture.hpp
