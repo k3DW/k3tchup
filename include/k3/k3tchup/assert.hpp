@@ -32,15 +32,15 @@
 #define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR) \
     switch(0) case 0: default:                                                  \
     if (                                                                        \
-        const auto _res_ = ::k3::k3tchup::context::check(                       \
+        const auto _k3tchup_res_ = ::k3::k3tchup::context::check(               \
             MAKE_CT(CONDITION),                                                 \
             MAKE_RT(CONDITION)                                                  \
         );                                                                      \
-        _res_                                                                   \
+        _k3tchup_res_                                                           \
     )                                                                           \
         (void)0;                                                                \
     else                                                                        \
-        MAKE_ERROR(_res_)
+        MAKE_ERROR(_k3tchup_res_)
 
 #define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL) \
     K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                        \
@@ -61,22 +61,22 @@
 
 // ASSERT_THAT does not ignore its internal non-fatal errors,
 // and treats them as fatal errors.
-#define ASSERT_THAT(FRAGMENT)                                                  \
-    {                                                                          \
-        ::k3::k3tchup::context::trace_context _ctx_;                           \
-        const std::size_t _starting_ = ::k3::k3tchup::context::total_errors(); \
-        (FRAGMENT)();                                                          \
-        const std::size_t _ending_ = ::k3::k3tchup::context::total_errors();   \
-        if (_ending_ != _starting_)                                            \
-            return;                                                            \
+#define ASSERT_THAT(FRAGMENT)                                                          \
+    {                                                                                  \
+        ::k3::k3tchup::context::trace_context _k3tchup_ctx_;                           \
+        const std::size_t _k3tchup_starting_ = ::k3::k3tchup::context::total_errors(); \
+        (FRAGMENT)();                                                                  \
+        const std::size_t _k3tchup_ending_ = ::k3::k3tchup::context::total_errors();   \
+        if (_k3tchup_ending_ != _k3tchup_starting_)                                    \
+            return;                                                                    \
     } static_assert(true, "require semicolon")
 
 // EXPECT_THAT ignores all the internal non-fatal errors,
 // but it cannot ignore the fatal errors.
-#define EXPECT_THAT(FRAGMENT)                        \
-    {                                                \
-        ::k3::k3tchup::context::trace_context _ctx_; \
-        (FRAGMENT)();                                \
+#define EXPECT_THAT(FRAGMENT)                                \
+    {                                                        \
+        ::k3::k3tchup::context::trace_context _k3tchup_ctx_; \
+        (FRAGMENT)();                                        \
     } static_assert(true, "require semicolon")
 
 #endif // K3_K3TCHUP_ASSERT_HPP
