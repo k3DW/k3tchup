@@ -1,3 +1,3 @@
-add_executable(example_run_time_optional run_time_optional.cpp)
-target_link_libraries(example_run_time_optional k3::k3tchup)
-k3_k3tchup_discover_tests(example_run_time_optional example_run_time_optional)
+add_executable(example_vector_of_optionals vector_of_optionals.cpp)
+target_link_libraries(example_vector_of_optionals k3::k3tchup)
+k3_k3tchup_discover_tests(example_vector_of_optionals example_vector_of_optionals)

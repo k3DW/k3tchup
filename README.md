@@ -18,7 +18,7 @@ Incorporate this library into your project, and link against the target `k3::k3t
 
 ## Usage examples
 
-See `"./examples/run_time_optional.cpp"` for a basic usage example.
+See `"./examples/vector_of_optionals.cpp"` for a basic usage example.
 
 ### Getting started
 
@@ -73,7 +73,7 @@ Here is an example.
 for (const std::optional<int>& x : foo()) {
   EXPECT_THAT([&x] {
     ASSERT_RUN_TIME(x.has_value()) << "optional did not have a value";
-    EXPECT_RUN_TIME(*x == 5) << "optional's value was not 5";
+    EXPECT_RUN_TIME(*x == 5) << "optional's value was not 5, it was " << *x;
   });
 }
 ```
@@ -102,25 +102,27 @@ Usage:
   run <fixture> <test> => Run the given test
 ```
 
-The output from `"./examples/run_time_optional.cpp"` ultimately looks like this.
+Part of the output from `"./examples/vector_of_optionals.cpp"` ultimately looks like this.
 
 ```
-Running fixture "my fixture"
-    Test "my test" - 5 checks / 2 errors.
-Fixture "my fixture" - 1 test / 1 failure.
+Running fixture "vector of optionals"
+    Test "run-time" - 5 checks / 2 errors.
+    ......
+Fixture "vector of optionals" - ? tests / ? failures.
 
 ================================
 
-1 test failed.
+? tests failed.
 
-Fixture "my fixture"
-Test "my test" failed with 2 errors.
-[Run-time non-fatal error]
-    at path\to\k3tchup\examples\run_time_optional.cpp:17
-    at path\to\k3tchup\examples\run_time_optional.cpp:17
-    optional's value was not 5
+Fixture "vector of optionals"
+Test "run-time" failed with 2 errors.
 [Run-time fatal error]
-    at path\to\k3tchup\examples\run_time_optional.cpp:17
-    at path\to\k3tchup\examples\run_time_optional.cpp:17
+    at path\to\k3tchup\examples\vector_of_optionals.cpp:21
+    at path\to\k3tchup\examples\vector_of_optionals.cpp:21
     optional did not have a value
+[Run-time non-fatal error]
+    at path\to\k3tchup\examples\vector_of_optionals.cpp:21
+    at path\to\k3tchup\examples\vector_of_optionals.cpp:21
+    optional's value was not 5, it was 4
+......
 ```
