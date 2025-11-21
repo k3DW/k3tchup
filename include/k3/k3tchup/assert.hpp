@@ -5,22 +5,19 @@
 #ifndef K3_K3TCHUP_ASSERT_HPP
 #define K3_K3TCHUP_ASSERT_HPP
 
-#if defined(__clang__) and (__clang_major__ <= 16)
-#define K3_K3TCHUP_CT_BOOL_(B) ([&] { return bool{(B)}; }())
-#else
-#define K3_K3TCHUP_CT_BOOL_(B) (bool{(B)})
-#endif
-
-
-
 #define K3_K3TCHUP_EVAL_BOOL_(NAME, BOOL) \
     K3_K3TCHUP_ ## NAME ## _ ## BOOL ## _
 
-#define K3_K3TCHUP_CT_CONDITION_0_(CONDITION) (true)
-#define K3_K3TCHUP_CT_CONDITION_1_(CONDITION) (std::bool_constant<K3_K3TCHUP_CT_BOOL_(CONDITION)>::value)
+namespace k3::k3tchup::detail {
 
-#define K3_K3TCHUP_RT_CONDITION_0_(CONDITION) (true)
-#define K3_K3TCHUP_RT_CONDITION_1_(CONDITION) (CONDITION)
+consteval bool eval_condition(bool b) {
+    return b;
+}
+
+} // namespace k3::k3tchup::detail
+
+#define K3_K3TCHUP_EVAL_CONDITION_0_(CONDITION) (true)
+#define K3_K3TCHUP_EVAL_CONDITION_1_(CONDITION) (CONDITION)
 
 #define K3_K3TCHUP_ERROR_FATALITY_0_(RESULT) \
     ::k3::k3tchup::void_assignment_helper{} = ::k3::k3tchup::context::add_error(RESULT, ::k3::k3tchup::error_fatality::non_fatal)
@@ -33,8 +30,8 @@
     switch(0) case 0: default:                                                  \
     if (                                                                        \
         const auto _k3tchup_res_ = ::k3::k3tchup::context::check(               \
-            MAKE_CT(CONDITION),                                                 \
-            MAKE_RT(CONDITION)                                                  \
+            ::k3::k3tchup::detail::eval_condition(MAKE_CT(bool{(CONDITION)})),  \
+            MAKE_RT(bool{(CONDITION)})                                          \
         );                                                                      \
         _k3tchup_res_                                                           \
     )                                                                           \
@@ -44,8 +41,8 @@
 
 #define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL) \
     K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                        \
-        K3_K3TCHUP_EVAL_BOOL_(CT_CONDITION, IS_CT),                  \
-        K3_K3TCHUP_EVAL_BOOL_(RT_CONDITION, IS_RT),                  \
+        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                \
+        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                \
         K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL)              \
     )
 
