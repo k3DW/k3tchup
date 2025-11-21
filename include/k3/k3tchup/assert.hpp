@@ -71,8 +71,7 @@
             return;                                                                    \
     } static_assert(true, "require semicolon")
 
-// EXPECT_THAT ignores all the internal non-fatal errors,
-// but it cannot ignore the fatal errors.
+// EXPECT_THAT ignores all the internal errors.
 #define EXPECT_THAT(FRAGMENT)                                \
     {                                                        \
         ::k3::k3tchup::context::trace_context _k3tchup_ctx_; \
