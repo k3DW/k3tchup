@@ -5,6 +5,9 @@
 #ifndef K3_K3TCHUP_ASSERT_HPP
 #define K3_K3TCHUP_ASSERT_HPP
 
+#define K3_K3TCHUP_CAT_IMPL_(A, B) A ## B
+#define K3_K3TCHUP_CAT_(A, B) K3_K3TCHUP_CAT_IMPL_(A, B)
+
 #define K3_K3TCHUP_EVAL_BOOL_IMPL_(NAME, BOOL) \
     K3_K3TCHUP_ ## NAME ## _ ## BOOL ## _
 #define K3_K3TCHUP_EVAL_BOOL_(NAME, BOOL) \
@@ -37,26 +40,27 @@ consteval bool eval_condition(bool b) {
 
 
 
-#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, ...) \
-    switch(0) case 0: default:                                                       \
-    if (                                                                             \
-        const auto _k3tchup_res_ = ::k3::k3tchup::context::check(                    \
-            ::k3::k3tchup::detail::eval_condition(MAKE_CT(bool{(CONDITION)})),       \
-            MAKE_RT(bool{(CONDITION)})                                               \
-        );                                                                           \
-        _k3tchup_res_                                                                \
-    ) {                                                                              \
-        K3_K3TCHUP_EVAL_BOOL_(DEPENDENT_CONDITION,                                   \
-            K3_K3TCHUP_IS_EMPTY_(__VA_ARGS__))(CONDITION, __VA_ARGS__)               \
-    }                                                                                \
-    else                                                                             \
-        MAKE_ERROR(_k3tchup_res_)
+#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, COUNTER, ...) \
+    switch(0) case 0: default:                                                                \
+    if (                                                                                      \
+        const auto K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER) = ::k3::k3tchup::context::check(   \
+            ::k3::k3tchup::detail::eval_condition(MAKE_CT(bool{(CONDITION)})),                \
+            MAKE_RT(bool{(CONDITION)})                                                        \
+        );                                                                                    \
+        K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER)                                               \
+    ) {                                                                                       \
+        K3_K3TCHUP_EVAL_BOOL_(DEPENDENT_CONDITION,                                            \
+            K3_K3TCHUP_IS_EMPTY_(__VA_ARGS__))(CONDITION, __VA_ARGS__)                        \
+    }                                                                                         \
+    else                                                                                      \
+        MAKE_ERROR(K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER))
 
 #define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL, ...) \
     K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                             \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                     \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                     \
         K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),                  \
+        __COUNTER__,                                                      \
         __VA_ARGS__                                                       \
     )
 
