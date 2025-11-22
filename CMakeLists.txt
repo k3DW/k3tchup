@@ -8,6 +8,8 @@ project (k3_k3tchup
          VERSION 0
          LANGUAGES CXX)
 
+set(K3TCHUP_BUILD_EXAMPLES OFF CACHE BOOL "Build examples")
+
 set(K3TCHUP_CXX_STANDARD "detect" CACHE STRING "C++ standard to use")
 set(K3TCHUP_CXX_WARNINGS "detect" CACHE STRING "C++ compiler warnings to enable")
 
@@ -43,4 +45,6 @@ target_include_directories(k3_k3tchup PUBLIC include)
 enable_testing()
 include(cmake/discover_tests.cmake)
 
-add_subdirectory(examples)
+if (K3TCHUP_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
