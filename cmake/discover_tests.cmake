@@ -1,3 +1,7 @@
+# Copyright 2024-2025 Braden Ganetsky
+# Distributed under the Boost Software License, Version 1.0.
+# https://www.boost.org/LICENSE_1_0.txt
+
 macro(k3_k3tchup_discover_tests target assembly_name)
 
     set(generated_file "${CMAKE_CURRENT_BINARY_DIR}/${target}.k3tchup.list_of_tests.cmake")
