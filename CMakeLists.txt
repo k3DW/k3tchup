@@ -10,8 +10,8 @@ project (k3_k3tchup
 
 set(K3TCHUP_BUILD_EXAMPLES OFF CACHE BOOL "Build examples")
 
-set(K3TCHUP_CXX_STANDARD "detect" CACHE STRING "C++ standard to use")
-set(K3TCHUP_CXX_WARNINGS "detect" CACHE STRING "C++ compiler warnings to enable")
+set(K3TCHUP_CXX_STANDARD "" CACHE STRING "C++ standard to use")
+set(K3TCHUP_CXX_WARNINGS "" CACHE STRING "C++ compiler warnings to enable")
 
 if (K3TCHUP_CXX_STANDARD)
     include(cmake/standard/${K3TCHUP_CXX_STANDARD}.cmake)
