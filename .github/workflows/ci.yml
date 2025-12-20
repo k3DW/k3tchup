@@ -1,0 +1,12 @@
+name: msvc
+
+on:
+  push:
+
+jobs:
+  install-msvc:
+    runs-on: windows-2022
+    steps:
+      - name: Testing
+        run: |
+          Write-Output "Hello World!"
