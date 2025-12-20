@@ -61,3 +61,19 @@ jobs:
             Write-Host "=== $($_.Name) ==="
             Get-Content $_.FullName
           }
+
+      - name: Check what was installed
+        run: |
+          Write-Host "Checking D:\vs-install..."
+          if (Test-Path "D:\vs-install") {
+            Get-ChildItem "D:\vs-install" -Recurse | Select-Object -First 20
+          } else {
+            Write-Host "D:\vs-install does not exist"
+          }
+          Write-Host ""
+          Write-Host "Checking original path..."
+          if (Test-Path "D:\a\k3tchup\k3tchup\install-msvc") {
+            Get-ChildItem "D:\a\k3tchup\k3tchup\install-msvc" -Recurse | Select-Object -First 20
+          } else {
+            Write-Host "D:\a\k3tchup\k3tchup\install-msvc does not exist"
+          }
