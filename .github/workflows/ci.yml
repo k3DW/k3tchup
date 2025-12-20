@@ -21,9 +21,28 @@ jobs:
             --quiet `
             --norestart
           Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
 
       - name: Testing
         run: |
           Get-Process | Where-Object {$_.Name -like "v*"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
+          Get-Process | Where-Object {$_.Name -like "setup"}
+          Start-Sleep -Seconds 2
           Get-Process | Where-Object {$_.Name -like "setup"}
           Write-Output "Hello World!"
