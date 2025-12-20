@@ -19,20 +19,36 @@ jobs:
             --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
             --includeRecommended
 
-      - name: Testing
-        run: |
-          Get-Process | Where-Object {$_.Name -like "v*"}
-          Start-Sleep -Seconds 2
-          Get-Process | Where-Object {$_.Name -like "setup"}
-          Start-Sleep -Seconds 2
-          Get-Process | Where-Object {$_.Name -like "setup"}
-          Start-Sleep -Seconds 2
-          Get-Process | Where-Object {$_.Name -like "setup"}
-          Start-Sleep -Seconds 2
-          Get-Process | Where-Object {$_.Name -like "setup"}
-          Start-Sleep -Seconds 2
-          Get-Process | Where-Object {$_.Name -like "setup"}
-          Write-Output "Hello World!"
+          $timeout = 3600
+          $elapsed = 0
+          $interval = 10
+          while ($elapsed -lt $timeout) {
+            $processes = Get-Process | Where-Object {$_.Name -like "setup"} -ErrorAction SilentlyContinue
+            if ($null -eq $processes) {
+              Write-Host "Installation complete"
+              exit 0
+            }
+            Start-Sleep -Seconds $interval
+            $elapsed += $interval
+            Write-Host "Waiting for setup to finish... ($elapsed seconds elapsed)"
+          }
+          Write-Error "Installation timed out after $timeout seconds"
+          exit 1
+
+      # - name: Testing
+      #   run: |
+      #     Get-Process | Where-Object {$_.Name -like "v*"}
+      #     Start-Sleep -Seconds 2
+      #     Get-Process | Where-Object {$_.Name -like "setup"}
+      #     Start-Sleep -Seconds 2
+      #     Get-Process | Where-Object {$_.Name -like "setup"}
+      #     Start-Sleep -Seconds 2
+      #     Get-Process | Where-Object {$_.Name -like "setup"}
+      #     Start-Sleep -Seconds 2
+      #     Get-Process | Where-Object {$_.Name -like "setup"}
+      #     Start-Sleep -Seconds 2
+      #     Get-Process | Where-Object {$_.Name -like "setup"}
+      #     Write-Output "Hello World!"
 
       - name: Testing
         run: |
