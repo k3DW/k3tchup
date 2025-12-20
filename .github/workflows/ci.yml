@@ -84,6 +84,7 @@ jobs:
             --installPath D:\vs-install `
             --add Microsoft.VisualStudio.Workload.VCTools `
             --includeRecommended `
+            --noUpdateInstaller `
             --quiet `
             --norestart
           Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
