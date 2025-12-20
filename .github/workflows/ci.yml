@@ -7,6 +7,10 @@ jobs:
   install-msvc:
     runs-on: windows-2022
     steps:
+      - name: Install bootstrapper
+        run: |
+          wget -O vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/e702ed73-8c29-4678-b0d8-72f971267431/1cf3e161fae4819694b7cd8b8cc5b548561b0ff9456d1074ea1d4f86b93f2698/vs_BuildTools.exe
+
       - name: Testing
         run: |
           Write-Output "Hello World!"
