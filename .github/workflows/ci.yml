@@ -24,4 +24,6 @@ jobs:
 
       - name: Testing
         run: |
+          Get-Process | Where-Object {$_.Name -like "v*"}
+          Get-Process | Where-Object {$_.Name -like "setup"}
           Write-Output "Hello World!"
