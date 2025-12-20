@@ -81,6 +81,7 @@ jobs:
       - name: Run bootstrapper
         run: |
           .\vs_buildtools.exe `
+            --layout D:\vs-layout `
             --installPath D:\vs-install `
             --add Microsoft.VisualStudio.Workload.VCTools `
             --includeRecommended `
