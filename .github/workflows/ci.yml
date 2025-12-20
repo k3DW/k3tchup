@@ -77,7 +77,6 @@ jobs:
           }
 
       - name: Check installer logs
-        if: failure()
         run: |
           Get-ChildItem $env:TEMP\dd_*.log | Select-Object -First 5 | ForEach-Object {
             Write-Host "=== $($_.Name) ==="
