@@ -91,3 +91,11 @@ jobs:
       - name: Debug - check for setup processes
         run: |
           Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
+
+      - name: Check full logs
+        run: |
+          $logFiles = Get-ChildItem $env:TEMP\dd_*.log | Sort-Object LastWriteTime -Descending | Select-Object
+          foreach ($log in $logFiles) {
+            Write-Host "=== $($log.Name) ==="
+            Get-Content $log.FullName
+          }
