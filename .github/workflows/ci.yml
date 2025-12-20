@@ -9,8 +9,17 @@ jobs:
     steps:
       - name: Install bootstrapper
         run: |
-          curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/e702ed73-8c29-4678-b0d8-72f971267431/1cf3e161fae4819694b7cd8b8cc5b548561b0ff9456d1074ea1d4f86b93f2698/vs_BuildTools.exe
-          ls
+          curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/9b2a4ec4-2233-4550-bb74-4e7facba2e03/00f873e49619fc73dedb5f577e52c1419d058b9bf2d0d3f6a09d4c05058c3f79/vs_BuildTools.exe
+
+      - name: Run bootstrapper
+        run: |
+          .\vs_buildtools.exe `
+            --installPath .\install-msvc `
+            --add Microsoft.VisualStudio.Component.VC.14.43.17.13.x86.x64;Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+            --includeRecommended `
+            --quiet `
+            --norestart
+          Get-Process | Where-Object {$_.Name -like "setup"}
 
       - name: Testing
         run: |
