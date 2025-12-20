@@ -57,7 +57,7 @@ jobs:
 
       - name: Check installer logs
         run: |
-          Get-ChildItem $env:TEMP\dd_*.log | Select-Object -First 5 | ForEach-Object {
+          Get-ChildItem $env:TEMP\dd_*.log | Select-Object | ForEach-Object {
             Write-Host "=== $($_.Name) ==="
             Get-Content $_.FullName
           }
@@ -77,3 +77,17 @@ jobs:
           } else {
             Write-Host "D:\a\k3tchup\k3tchup\install-msvc does not exist"
           }
+
+      - name: Run bootstrapper
+        run: |
+          .\vs_buildtools.exe `
+            --installPath D:\vs-install `
+            --add Microsoft.VisualStudio.Workload.VCTools `
+            --includeRecommended `
+            --quiet `
+            --norestart
+          Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
+
+      - name: Debug - check for setup processes
+        run: |
+          Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
