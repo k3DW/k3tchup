@@ -50,9 +50,36 @@ jobs:
       #     Get-Process | Where-Object {$_.Name -like "setup"}
       #     Write-Output "Hello World!"
 
-      - name: Testing
+      # - name: Testing
+      #   run: |
+      #     ls $PWD\install-msvc
+      #     ls $PWD\install-msvc\VC
+      #     ls $PWD\install-msvc\VC\Tools\
+      #     ls $PWD\install-msvc\VC\Tools\MSVC
+
+      - name: Verify installation
         run: |
-          ls $PWD\install-msvc
-          ls $PWD\install-msvc\VC
-          ls $PWD\install-msvc\VC\Tools\
-          ls $PWD\install-msvc\VC\Tools\MSVC
+          if (Test-Path "$PWD\install-msvc\VC\Tools\MSVC") {
+            Write-Host "Installation directory exists"
+            Get-ChildItem "$PWD\install-msvc\VC\Tools\MSVC"
+          } else {
+            Write-Host "Installation directory not found"
+          }
+
+      - name: Verify cl.exe exists
+        run: |
+          $clPath = Get-ChildItem -Path "$PWD\install-msvc" -Recurse -Filter "cl.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($clPath) {
+            Write-Host "Found cl.exe at: $($clPath.FullName)"
+            & $clPath.FullName
+          } else {
+            Write-Host "cl.exe not found"
+          }
+
+      - name: Check installer logs
+        if: failure()
+        run: |
+          Get-ChildItem $env:TEMP\dd_*.log | Select-Object -First 5 | ForEach-Object {
+            Write-Host "=== $($_.Name) ==="
+            Get-Content $_.FullName | Tail -50
+          }
