@@ -90,6 +90,13 @@ jobs:
             --norestart
           Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
 
+      - name: Install from layout
+        run: |
+          D:\vs-layout\vs_buildtools.exe `
+            --installPath D:\vs-install `
+            --quiet `
+            --norestart
+
       - name: Debug - check for setup processes
         run: |
           Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
