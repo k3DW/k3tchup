@@ -14,11 +14,15 @@ jobs:
       - name: Run bootstrapper
         run: |
           .\vs_buildtools.exe `
-            --installPath $PWD\install-msvc `
+            --layout D:\vs-layout `
+            --installPath D:\vs-install `
             --add Microsoft.VisualStudio.Workload.VCTools `
             --includeRecommended `
+            --noUpdateInstaller `
             --quiet `
             --norestart
+          Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
+          ls D:\vs-layout
 
           $timeout = 3600
           $elapsed = 0
@@ -89,6 +93,7 @@ jobs:
             --quiet `
             --norestart
           Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
+          ls D:\vs-layout
 
       - name: Install from layout
         run: |
