@@ -28,7 +28,7 @@ jobs:
           $elapsed = 0
           $interval = 10
           while ($elapsed -lt $timeout) {
-            $processes = Get-Process | Where-Object {$_.Name -like "setup"} -ErrorAction SilentlyContinue
+            $processes = Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} -ErrorAction SilentlyContinue
             if ($null -eq $processes) {
               Write-Host "Installation complete"
               exit 0
@@ -39,61 +39,6 @@ jobs:
           }
           Write-Error "Installation timed out after $timeout seconds"
           exit 1
-
-      - name: Verify installation
-        run: |
-          if (Test-Path "$PWD\install-msvc\VC\Tools\MSVC") {
-            Write-Host "Installation directory exists"
-            Get-ChildItem "$PWD\install-msvc\VC\Tools\MSVC"
-          } else {
-            Write-Host "Installation directory not found"
-          }
-
-      - name: Verify cl.exe exists
-        run: |
-          $clPath = Get-ChildItem -Path "$PWD\install-msvc" -Recurse -Filter "cl.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ($clPath) {
-            Write-Host "Found cl.exe at: $($clPath.FullName)"
-            & $clPath.FullName
-          } else {
-            Write-Host "cl.exe not found"
-          }
-
-      - name: Check installer logs
-        run: |
-          Get-ChildItem $env:TEMP\dd_*.log | Select-Object | ForEach-Object {
-            Write-Host "=== $($_.Name) ==="
-            Get-Content $_.FullName
-          }
-
-      - name: Check what was installed
-        run: |
-          Write-Host "Checking D:\vs-install..."
-          if (Test-Path "D:\vs-install") {
-            Get-ChildItem "D:\vs-install" -Recurse | Select-Object -First 20
-          } else {
-            Write-Host "D:\vs-install does not exist"
-          }
-          Write-Host ""
-          Write-Host "Checking original path..."
-          if (Test-Path "D:\a\k3tchup\k3tchup\install-msvc") {
-            Get-ChildItem "D:\a\k3tchup\k3tchup\install-msvc" -Recurse | Select-Object -First 20
-          } else {
-            Write-Host "D:\a\k3tchup\k3tchup\install-msvc does not exist"
-          }
-
-      - name: Run bootstrapper
-        run: |
-          .\vs_buildtools.exe `
-            --layout D:\vs-layout `
-            --installPath D:\vs-install `
-            --add Microsoft.VisualStudio.Workload.VCTools `
-            --includeRecommended `
-            --noUpdateInstaller `
-            --quiet `
-            --norestart
-          Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
-          ls D:\vs-layout
 
       - name: Install from layout
         run: |
