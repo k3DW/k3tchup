@@ -22,7 +22,6 @@ jobs:
             --quiet `
             --norestart
           Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
-          ls D:\vs-layout
 
           $timeout = 3600
           $elapsed = 0
