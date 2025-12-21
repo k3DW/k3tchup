@@ -39,12 +39,12 @@ jobs:
           Write-Error "Installation timed out after $timeout seconds"
           exit 1
 
-      - name: Install from layout
-        run: |
-          D:\vs-layout\vs_buildtools.exe `
-            --installPath D:\vs-install `
-            --quiet `
-            --norestart
+      # - name: Install from layout
+      #   run: |
+      #     D:\vs-layout\vs_buildtools.exe `
+      #       --installPath D:\vs-install `
+      #       --quiet `
+      #       --norestart
 
       - name: Debug - check for setup processes
         run: |
