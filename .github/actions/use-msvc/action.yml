@@ -1,0 +1,50 @@
+name: use-msvc
+
+inputs:
+  vs-version:
+    required: true
+  bootstrapper-url:
+    required: true
+  install-dir:
+    default: "D:\\vs-install"
+
+runs:
+  using: "composite"
+  steps:
+    # - name: Cache VS installation
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: |
+    #       ${{ inputs.install-dir }}
+    #     key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
+
+    - name: Download, install, and setup VS Build Tools
+      timeout-minutes: 30
+      run: |
+        if (-Not (Test-Path "${{ inputs.install-dir }}")) {
+          curl -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
+
+          $process = Start-Process -FilePath ".\vs_buildtools.exe" `
+            -ArgumentList @(
+              '--installPath', '${{ inputs.install-dir }}',
+              '--add', 'Microsoft.VisualStudio.Component.VC.${{ inputs.vs-version }}.x86.x64',
+              '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+              '--includeRecommended',
+              '--noUpdateInstaller',
+              '--quiet',
+              '--norestart'
+            ) `
+            -NoNewWindow `
+            -PassThru `
+            -Wait
+
+          Write-Host "Process exited with code: $($process.ExitCode)"
+        }
+
+        # Set the proper environment variables
+        cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+          ForEach-Object {
+            if ($_ -match '^(.*?)=(.*)$') {
+              "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+            }
+          }
