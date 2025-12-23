@@ -61,5 +61,5 @@ jobs:
 
       - name: Verify
         run: |
-          ls D:\
-          ls D:\vs-install\
+          ls $PWD\
+          ls $PWD\myinstall\
