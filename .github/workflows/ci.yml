@@ -11,10 +11,8 @@ jobs:
         run: |
           curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
 
-
       - name: Run bootstrapper
         run: |
-          $exitCode = 0
           .\vs_buildtools.exe `
             --installPath D:\vs-install `
             --add Microsoft.VisualStudio.Workload.VCTools `
@@ -22,68 +20,20 @@ jobs:
             --noUpdateInstaller `
             --passive `
             --norestart
-          $exitCode = $LASTEXITCODE
-          Write-Host "Installer exit code: $exitCode"
-          exit $exitCode
 
-      # - name: Run bootstrapper
-      #   run: |
-      #     .\vs_buildtools.exe `
-      #       --installPath $PWD\myinstall `
-      #       --add Microsoft.VisualStudio.Workload.VCTools `
-      #       --includeRecommended `
-      #       --noUpdateInstaller `
-      #       --passive `
-      #       --norestart `
-      #       --wait `
-      #       --nocache
-
-      #     # $timeout = 3600
-      #     # $elapsed = 0
-      #     # $interval = 10
-      #     # while ($elapsed -lt $timeout) {
-      #     #   $processes = Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} -ErrorAction SilentlyContinue
-      #     #   if ($null -eq $processes) {
-      #     #     Write-Host "Installation complete"
-      #     #     exit 0
-      #     #   }
-      #     #   Start-Sleep -Seconds $interval
-      #     #   $elapsed += $interval
-      #     #   Write-Host "Waiting for setup to finish... ($elapsed seconds elapsed)"
-      #     # }
-      #     # Write-Error "Installation timed out after $timeout seconds"
-      #     # exit 1
-
-      - name: Verify installation
+      - name: Check exit code
+        if: always()
         run: |
-          dir "D:\vs-install"
-          if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
-            Write-Host "VCTools installed successfully"
+          Write-Host "Last exit code: $LASTEXITCODE"
+          if (Test-Path "D:\vs-install") {
+            Write-Host "Installation directory exists"
+            Get-ChildItem "D:\vs-install" | Select-Object Name
           } else {
-            Write-Host "VCTools NOT found - installation may have failed"
-            exit 1
+            Write-Host "Installation directory does NOT exist"
           }
 
-      # - name: Install from layout
-      #   run: |
-      #     D:\vs-layout\vs_buildtools.exe `
-      #       --installPath D:\vs-install `
-      #       --quiet `
-      #       --norestart
-
-      # - name: Debug - check for setup processes
-      #   run: |
-      #     Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
-
-      # - name: Check full logs
-      #   run: |
-      #     $logFiles = Get-ChildItem $env:TEMP\dd_*.log | Sort-Object LastWriteTime -Descending | Select-Object
-      #     foreach ($log in $logFiles) {
-      #       Write-Host "=== $($log.Name) ==="
-      #       Get-Content $log.FullName
-      #     }
-
-      # - name: Verify
-      #   run: |
-      #     ls $PWD\
-      #     ls $PWD\myinstall\
+      - name: Check temp directory
+        if: always()
+        run: |
+          Write-Host "Checking for installer temp directories..."
+          Get-ChildItem "C:\Users\RUNNER~1\AppData\Local\Temp" -Filter "*vs*" -Directory | Select-Object Name
