@@ -9,7 +9,8 @@ jobs:
     steps:
       - name: Install bootstrapper
         run: |
-          curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/9b2a4ec4-2233-4550-bb74-4e7facba2e03/00f873e49619fc73dedb5f577e52c1419d058b9bf2d0d3f6a09d4c05058c3f79/vs_BuildTools.exe
+          curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release.ltsc.17.12/vs_buildtools.exe
+          # curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/9b2a4ec4-2233-4550-bb74-4e7facba2e03/00f873e49619fc73dedb5f577e52c1419d058b9bf2d0d3f6a09d4c05058c3f79/vs_BuildTools.exe
 
       - name: Run bootstrapper
         run: |
@@ -21,23 +22,22 @@ jobs:
             --noUpdateInstaller `
             --quiet `
             --norestart
-          Write-Host "Bootstrapper exited with code: $LASTEXITCODE"
 
-          $timeout = 3600
-          $elapsed = 0
-          $interval = 10
-          while ($elapsed -lt $timeout) {
-            $processes = Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} -ErrorAction SilentlyContinue
-            if ($null -eq $processes) {
-              Write-Host "Installation complete"
-              exit 0
-            }
-            Start-Sleep -Seconds $interval
-            $elapsed += $interval
-            Write-Host "Waiting for setup to finish... ($elapsed seconds elapsed)"
-          }
-          Write-Error "Installation timed out after $timeout seconds"
-          exit 1
+          # $timeout = 3600
+          # $elapsed = 0
+          # $interval = 10
+          # while ($elapsed -lt $timeout) {
+          #   $processes = Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} -ErrorAction SilentlyContinue
+          #   if ($null -eq $processes) {
+          #     Write-Host "Installation complete"
+          #     exit 0
+          #   }
+          #   Start-Sleep -Seconds $interval
+          #   $elapsed += $interval
+          #   Write-Host "Waiting for setup to finish... ($elapsed seconds elapsed)"
+          # }
+          # Write-Error "Installation timed out after $timeout seconds"
+          # exit 1
 
       # - name: Install from layout
       #   run: |
