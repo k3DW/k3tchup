@@ -66,5 +66,5 @@ jobs:
           mkdir build
           cd build
           cmd /c "D:\vs-install\VC\Auxiliary\Build\vcvars64.bat && powershell"
-          cmake ..
+          cmake .. -DK3TCHUP_CXX_STANDARD="detect"
           cmake --build .
