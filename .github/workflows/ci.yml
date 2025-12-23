@@ -7,39 +7,57 @@ jobs:
   install-msvc:
     runs-on: windows-2022
     steps:
-      - name: Install bootstrapper
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check disk space
+        run: |
+          Get-Volume | Where-Object {$_.DriveLetter -eq 'D'} | Select-Object DriveLetter, SizeRemaining, Size
+
+      - name: Download Visual Studio Build Tools
         run: |
           curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
 
       - name: Run bootstrapper
+        timeout-minutes: 30
         run: |
-          .\vs_buildtools.exe `
-            --installPath D:\vs-install `
-            --add Microsoft.VisualStudio.Workload.VCTools `
-            --includeRecommended `
-            --noUpdateInstaller `
-            --passive `
-            --norestart
+          $process = Start-Process -FilePath ".\vs_buildtools.exe" `
+            -ArgumentList @(
+              '--installPath', 'D:\vs-install',
+              '--add', 'Microsoft.VisualStudio.Workload.VCTools',
+              '--includeRecommended',
+              '--noUpdateInstaller',
+              '--quiet',
+              '--norestart'
+            ) `
+            -NoNewWindow `
+            -PassThru `
+            -Wait
 
-      - name: Read all installer logs
-        if: always()
+          Write-Host "Process exited with code: $($process.ExitCode)"
+          exit $process.ExitCode
+
+      - name: Verify installation
         run: |
-          Write-Host "=== Checking temp directory ==="
-          $tempPath = "C:\Users\runneradmin\AppData\Local\Temp"
-          Get-ChildItem $tempPath -Filter "dd_*" | ForEach-Object {
-            Write-Host "`n=== File: $($_.Name) (Size: $($_.Length) bytes) ==="
-            if ($_.Length -gt 0) {
-              Get-Content $_.FullName
+          if (Test-Path "D:\vs-install") {
+            Write-Host "Installation directory exists"
+            Get-ChildItem "D:\vs-install" | Select-Object Name
+            if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
+              Write-Host "VCTools installed successfully"
             } else {
-              Write-Host "(empty file)"
+              Write-Host "VCTools NOT found"
+              exit 1
             }
+          } else {
+            Write-Host "Installation directory does NOT exist"
+            exit 1
           }
 
-          Write-Host "`n=== Checking VSLogs directory ==="
-          $vsLogsPath = "$tempPath\VSLogs"
-          if (Test-Path $vsLogsPath) {
-            Get-ChildItem $vsLogsPath -Recurse -File | ForEach-Object {
-              Write-Host "`nFile: $($_.FullName)"
-              Get-Content $_.FullName | Select-Object -First 50
-            }
-          }
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build project
+        run: |
+          msbuild -version
+          # Add your actual build command here
+          # msbuild YourProject.sln /p:Configuration=Release
