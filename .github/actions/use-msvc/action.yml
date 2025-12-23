@@ -22,7 +22,7 @@ runs:
       shell: powershell
       run: |
         if (-Not (Test-Path "${{ inputs.install-dir }}")) {
-          curl -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
+          curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
 
           $process = Start-Process -FilePath ".\vs_buildtools.exe" `
             -ArgumentList @(

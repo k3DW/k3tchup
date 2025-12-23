@@ -10,48 +10,48 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Setup MSVC
-      #   uses: ./.github/actions/use-msvc
-      #   with:
-      #     vs-version: 14.40.17.10
-      #     bootstrapper-url: https://download.visualstudio.microsoft.com/download/pr/4ae9ea68-8765-4182-8d40-577ce66203b5/14419bae89be9115f47610909a01bd55e75e2581b3abc3016c52728049c75d38/vs_BuildTools.exe
-
-      - name: Cache VS installation
-        uses: actions/cache@v4
+      - name: Setup MSVC
+        uses: ./.github/actions/use-msvc
         with:
-          path: |
-            D:\vs-install
-          key: сaching-key-0001
+          vs-version: 14.40.17.10
+          bootstrapper-url: https://download.visualstudio.microsoft.com/download/pr/4ae9ea68-8765-4182-8d40-577ce66203b5/14419bae89be9115f47610909a01bd55e75e2581b3abc3016c52728049c75d38/vs_BuildTools.exe
 
-      - name: Download and install VS Build Tools
-        timeout-minutes: 30
-        run: |
-          if (-Not (Test-Path "D:\vs-install")) {
-            curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/165d4174-7d65-4baa-83d5-4652a3e56211/1906b0c92a4348c646f1849a2404b469a7e02edcf0cf76a05b972f7a445346e8/vs_BuildTools.exe
+      # - name: Cache VS installation
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       D:\vs-install
+      #     key: сaching-key-0001
 
-            $process = Start-Process -FilePath ".\vs_buildtools.exe" `
-              -ArgumentList @(
-                '--installPath', 'D:\vs-install',
-                '--add', 'Microsoft.VisualStudio.Component.VC.14.40.17.10.x86.x64',
-                '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
-                '--includeRecommended',
-                '--noUpdateInstaller',
-                '--quiet',
-                '--norestart'
-              ) `
-              -NoNewWindow `
-              -PassThru `
-              -Wait
+      # - name: Download and install VS Build Tools
+      #   timeout-minutes: 30
+      #   run: |
+      #     if (-Not (Test-Path "D:\vs-install")) {
+      #       curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/165d4174-7d65-4baa-83d5-4652a3e56211/1906b0c92a4348c646f1849a2404b469a7e02edcf0cf76a05b972f7a445346e8/vs_BuildTools.exe
 
-            Write-Host "Process exited with code: $($process.ExitCode)"
-          }
+      #       $process = Start-Process -FilePath ".\vs_buildtools.exe" `
+      #         -ArgumentList @(
+      #           '--installPath', 'D:\vs-install',
+      #           '--add', 'Microsoft.VisualStudio.Component.VC.14.40.17.10.x86.x64',
+      #           '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+      #           '--includeRecommended',
+      #           '--noUpdateInstaller',
+      #           '--quiet',
+      #           '--norestart'
+      #         ) `
+      #         -NoNewWindow `
+      #         -PassThru `
+      #         -Wait
 
-          cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
-            ForEach-Object {
-              if ($_ -match '^(.*?)=(.*)$') {
-                "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-              }
-            }
+      #       Write-Host "Process exited with code: $($process.ExitCode)"
+      #     }
+
+      #     cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+      #       ForEach-Object {
+      #         if ($_ -match '^(.*?)=(.*)$') {
+      #           "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      #         }
+      #       }
 
       # - name: Verify installation
       #   run: |
