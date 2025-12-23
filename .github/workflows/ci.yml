@@ -44,3 +44,20 @@ jobs:
           Write-Host "Looking for VS installer logs..."
           $logPath = "C:\Users\RUNNER~1\AppData\Local\Temp"
           Get-ChildItem $logPath -Filter "dd_*" | Select-Object Name, LastWriteTime | Head -20
+
+
+      - name: Read bootstrapper log
+        if: always()
+        run: |
+          $logPath = "C:\Users\RUNNER~1\AppData\Local\Temp\dd_bootstrapper_20251223170338.log"
+          if (Test-Path $logPath) {
+            Write-Host "=== Bootstrapper Log ==="
+            Get-Content $logPath | Tail -100
+          } else {
+            Write-Host "Log file not found at $logPath"
+            $latestLog = Get-ChildItem "C:\Users\RUNNER~1\AppData\Local\Temp\dd_bootstrapper*.log" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            if ($latestLog) {
+              Write-Host "Latest log: $($latestLog.FullName)"
+              Get-Content $latestLog.FullName | Tail -100
+            }
+          }
