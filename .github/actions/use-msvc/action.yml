@@ -20,7 +20,6 @@ runs:
 
     - name: Download, install, and setup VS Build Tools
       shell: powershell
-      timeout-minutes: 30
       run: |
         if (-Not (Test-Path "${{ inputs.install-dir }}")) {
           curl -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
