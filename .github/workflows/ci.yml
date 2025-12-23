@@ -10,12 +10,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Cache VS installation
-        uses: actions/cache@v4
-        with:
-          path: |
-            D:\vs-install
-          key: сaching-key-0001
+      # - name: Cache VS installation
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: |
+      #       D:\vs-install
+      #     key: сaching-key-0001
 
       - name: Download and install VS Build Tools
         timeout-minutes: 30
