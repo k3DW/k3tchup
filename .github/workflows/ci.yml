@@ -10,8 +10,6 @@ jobs:
       - name: Install bootstrapper
         run: |
           curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
-          # curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release.ltsc.17.12/vs_buildtools.exe
-          # curl -L -o vs_buildtools.exe https://download.visualstudio.microsoft.com/download/pr/9b2a4ec4-2233-4550-bb74-4e7facba2e03/00f873e49619fc73dedb5f577e52c1419d058b9bf2d0d3f6a09d4c05058c3f79/vs_BuildTools.exe
 
       - name: Run bootstrapper
         run: |
@@ -41,6 +39,16 @@ jobs:
           # Write-Error "Installation timed out after $timeout seconds"
           # exit 1
 
+      - name: Verify installation
+        run: |
+          dir "D:\vs-install"
+          if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
+            Write-Host "VCTools installed successfully"
+          } else {
+            Write-Host "VCTools NOT found - installation may have failed"
+            exit 1
+          }
+
       # - name: Install from layout
       #   run: |
       #     D:\vs-layout\vs_buildtools.exe `
@@ -48,19 +56,19 @@ jobs:
       #       --quiet `
       #       --norestart
 
-      - name: Debug - check for setup processes
-        run: |
-          Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
+      # - name: Debug - check for setup processes
+      #   run: |
+      #     Get-Process | Where-Object {$_.Name -like "*setup*" -or $_.Name -like "*vs*"} | Select-Object Name, Id, StartTime
 
-      - name: Check full logs
-        run: |
-          $logFiles = Get-ChildItem $env:TEMP\dd_*.log | Sort-Object LastWriteTime -Descending | Select-Object
-          foreach ($log in $logFiles) {
-            Write-Host "=== $($log.Name) ==="
-            Get-Content $log.FullName
-          }
+      # - name: Check full logs
+      #   run: |
+      #     $logFiles = Get-ChildItem $env:TEMP\dd_*.log | Sort-Object LastWriteTime -Descending | Select-Object
+      #     foreach ($log in $logFiles) {
+      #       Write-Host "=== $($log.Name) ==="
+      #       Get-Content $log.FullName
+      #     }
 
-      - name: Verify
-        run: |
-          ls $PWD\
-          ls $PWD\myinstall\
+      # - name: Verify
+      #   run: |
+      #     ls $PWD\
+      #     ls $PWD\myinstall\
