@@ -39,7 +39,7 @@ jobs:
               Write-Host "VCTools installed successfully"
               if (Test-Path "$PWD\vs-install\VC\Tools\MSVC\14.40.33807") {
                 Write-Host "14.40.33807 installed"
-                $PWD\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe
+                & "$PWD\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe"
               }
             } else {
               Write-Host "VCTools NOT found"
