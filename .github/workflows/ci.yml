@@ -38,14 +38,14 @@ jobs:
               -Wait
 
             Write-Host "Process exited with code: $($process.ExitCode)"
-
-            cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
-              ForEach-Object {
-                if ($_ -match '^(.*?)=(.*)$') {
-                  "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-                }
-              }
           }
+
+          cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+            ForEach-Object {
+              if ($_ -match '^(.*?)=(.*)$') {
+                "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+              }
+            }
 
       # - name: Verify installation
       #   run: |
