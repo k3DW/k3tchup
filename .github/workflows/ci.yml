@@ -37,3 +37,10 @@ jobs:
         run: |
           Write-Host "Checking for installer temp directories..."
           Get-ChildItem "C:\Users\RUNNER~1\AppData\Local\Temp" -Filter "*vs*" -Directory | Select-Object Name
+
+      - name: Check installer logs
+        if: always()
+        run: |
+          Write-Host "Looking for VS installer logs..."
+          $logPath = "C:\Users\RUNNER~1\AppData\Local\Temp"
+          Get-ChildItem $logPath -Filter "dd_*" | Select-Object Name, LastWriteTime | Head -20
