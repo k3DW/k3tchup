@@ -11,12 +11,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # - name: Cache VS installation
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: |
-    #       ${{ inputs.install-dir }}
-    #     key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
+    - name: Cache VS installation
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ inputs.install-dir }}
+        key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
 
     - name: Download and install VS Build Tools
       shell: powershell
@@ -44,7 +44,7 @@ runs:
     - name: Set MSVC environment variables
       shell: powershell
       run: |
-        cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+        cmd /c "call ${{ inputs.install-dir }}\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
             if ($_ -match '^(.*?)=(.*)$') {
               "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
