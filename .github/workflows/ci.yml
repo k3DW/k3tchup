@@ -7,6 +7,9 @@ jobs:
   install-msvc:
     runs-on: windows-2022
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download Visual Studio Build Tools
         run: |
           # curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
@@ -21,7 +24,7 @@ jobs:
             -ArgumentList @(
               '--installPath', 'D:\vs-install',
               '--add', 'Microsoft.VisualStudio.Component.VC.14.40.17.10.x86.x64',
-              # '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+              '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
               '--includeRecommended',
               '--noUpdateInstaller',
               '--quiet',
@@ -54,3 +57,11 @@ jobs:
             Write-Host "Installation directory does NOT exist"
             exit 1
           }
+
+      - name: Build the code
+        run: |
+          cmd /c "D:\vs-install\VC\Auxiliary\Build\vcvars64.bat && powershell"
+          mkdir build
+          cd build
+          cmake .. -DK3TCHUP_CXX_STANDARD="detect" -DK3TCHUP_CXX_WARNINGS="detect"
+          cmake --build .
