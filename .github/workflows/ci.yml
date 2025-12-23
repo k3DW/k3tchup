@@ -87,6 +87,5 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat && cmake .. -DK3TCHUP_CXX_STANDARD=detect"
-          # cmake .. -DK3TCHUP_CXX_STANDARD="detect"
+          cmake .. -DK3TCHUP_CXX_STANDARD="detect"
           cmake --build .

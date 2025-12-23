@@ -21,25 +21,25 @@ runs:
     - name: Download and install VS Build Tools
       shell: powershell
       run: |
-        if (-Not (Test-Path "${{ inputs.install-dir }}")) {
-          curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
+        # if (-Not (Test-Path "${{ inputs.install-dir }}")) {
+        curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
 
-          $process = Start-Process -FilePath ".\vs_buildtools.exe" `
-            -ArgumentList @(
-              '--installPath', '${{ inputs.install-dir }}',
-              '--add', 'Microsoft.VisualStudio.Component.VC.${{ inputs.vs-version }}.x86.x64',
-              '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
-              '--includeRecommended',
-              '--noUpdateInstaller',
-              '--quiet',
-              '--norestart'
-            ) `
-            -NoNewWindow `
-            -PassThru `
-            -Wait
+        $process = Start-Process -FilePath ".\vs_buildtools.exe" `
+          -ArgumentList @(
+            '--installPath', '${{ inputs.install-dir }}',
+            '--add', 'Microsoft.VisualStudio.Component.VC.${{ inputs.vs-version }}.x86.x64',
+            '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+            '--includeRecommended',
+            '--noUpdateInstaller',
+            '--quiet',
+            '--norestart'
+          ) `
+          -NoNewWindow `
+          -PassThru `
+          -Wait
 
-          Write-Host "Process exited with code: $($process.ExitCode)"
-        }
+        Write-Host "Process exited with code: $($process.ExitCode)"
+        # }
 
 
     - name: Set MSVC environment variables
