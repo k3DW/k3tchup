@@ -7,24 +7,17 @@ jobs:
   install-msvc:
     runs-on: windows-2022
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check disk space
-        run: |
-          Get-Volume | Where-Object {$_.DriveLetter -eq 'D'} | Select-Object DriveLetter, SizeRemaining, Size
-
       - name: Download Visual Studio Build Tools
         run: |
-          curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
+          curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release.ltsc.17.10/vs_buildtools.exe
 
       - name: Run bootstrapper
         timeout-minutes: 30
         run: |
           $process = Start-Process -FilePath ".\vs_buildtools.exe" `
             -ArgumentList @(
-              '--installPath', 'D:\vs-install',
-              '--add', 'Microsoft.VisualStudio.Workload.VCTools',
+              '--installPath', '$PWD\vs-install',
+              '--add', 'Microsoft.VisualStudio.Component.VC.14.40.17.10.x86.x64',
               '--includeRecommended',
               '--noUpdateInstaller',
               '--quiet',
@@ -39,11 +32,15 @@ jobs:
 
       - name: Verify installation
         run: |
-          if (Test-Path "D:\vs-install") {
+          if (Test-Path "$PWD\vs-install") {
             Write-Host "Installation directory exists"
-            Get-ChildItem "D:\vs-install" | Select-Object Name
-            if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
+            Get-ChildItem "$PWD\vs-install" | Select-Object Name
+            if (Test-Path "$PWD\vs-install\VC\Tools\MSVC") {
               Write-Host "VCTools installed successfully"
+              if (Test-Path "$PWD\vs-install\VC\Tools\MSVC\14.40.33807") {
+                Write-Host "14.40.33807 installed"
+                $PWD\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe
+              }
             } else {
               Write-Host "VCTools NOT found"
               exit 1
@@ -52,12 +49,3 @@ jobs:
             Write-Host "Installation directory does NOT exist"
             exit 1
           }
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Build project
-        run: |
-          msbuild -version
-          # Add your actual build command here
-          # msbuild YourProject.sln /p:Configuration=Release
