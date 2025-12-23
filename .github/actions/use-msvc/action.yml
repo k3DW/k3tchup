@@ -18,7 +18,7 @@ runs:
     #       ${{ inputs.install-dir }}
     #     key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
 
-    - name: Download, install, and setup VS Build Tools
+    - name: Download and install VS Build Tools
       shell: powershell
       run: |
         if (-Not (Test-Path "${{ inputs.install-dir }}")) {
@@ -41,7 +41,9 @@ runs:
           Write-Host "Process exited with code: $($process.ExitCode)"
         }
 
-        # Set the proper environment variables
+    - name: Set MSVC environment variables
+      shell: powershell
+      run: |
         cmd /c "call D:\vs-install\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
             if ($_ -match '^(.*?)=(.*)$') {
