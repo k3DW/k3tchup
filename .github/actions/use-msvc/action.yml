@@ -19,6 +19,7 @@ runs:
     #     key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
 
     - name: Download, install, and setup VS Build Tools
+      shell: powershell
       timeout-minutes: 30
       run: |
         if (-Not (Test-Path "${{ inputs.install-dir }}")) {
