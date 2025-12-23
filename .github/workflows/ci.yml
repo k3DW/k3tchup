@@ -21,38 +21,25 @@ jobs:
             --passive `
             --norestart
 
-      - name: Check exit code
+      - name: Read all installer logs
         if: always()
         run: |
-          Write-Host "Last exit code: $LASTEXITCODE"
-          if (Test-Path "D:\vs-install") {
-            Write-Host "Installation directory exists"
-            Get-ChildItem "D:\vs-install" | Select-Object Name
-          } else {
-            Write-Host "Installation directory does NOT exist"
+          Write-Host "=== Checking temp directory ==="
+          $tempPath = "C:\Users\runneradmin\AppData\Local\Temp"
+          Get-ChildItem $tempPath -Filter "dd_*" | ForEach-Object {
+            Write-Host "`n=== File: $($_.Name) (Size: $($_.Length) bytes) ==="
+            if ($_.Length -gt 0) {
+              Get-Content $_.FullName
+            } else {
+              Write-Host "(empty file)"
+            }
           }
 
-      - name: Check temp directory
-        if: always()
-        run: |
-          Write-Host "Checking for installer temp directories..."
-          Get-ChildItem "C:\Users\RUNNER~1\AppData\Local\Temp" -Filter "*vs*" -Directory | Select-Object Name
-
-      - name: Check installer logs
-        if: always()
-        run: |
-          Write-Host "Looking for VS installer logs..."
-          $logPath = "C:\Users\RUNNER~1\AppData\Local\Temp"
-          Get-ChildItem $logPath -Filter "dd_*" | Select-Object Name, LastWriteTime | Head -20
-
-
-      - name: Read bootstrapper log
-        if: always()
-        run: |
-          $latestLog = Get-ChildItem "C:\Users\runneradmin\AppData\Local\Temp\dd_bootstrapper*.log" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-          if ($latestLog) {
-            Write-Host "=== Latest Bootstrapper Log ==="
-            Get-Content $latestLog.FullName
-          } else {
-            Write-Host "No bootstrapper logs found"
+          Write-Host "`n=== Checking VSLogs directory ==="
+          $vsLogsPath = "$tempPath\VSLogs"
+          if (Test-Path $vsLogsPath) {
+            Get-ChildItem $vsLogsPath -Recurse -File | ForEach-Object {
+              Write-Host "`nFile: $($_.FullName)"
+              Get-Content $_.FullName | Select-Object -First 50
+            }
           }
