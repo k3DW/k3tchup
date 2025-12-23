@@ -17,7 +17,7 @@ jobs:
         run: |
           $process = Start-Process -FilePath ".\vs_buildtools.exe" `
             -ArgumentList @(
-              '--installPath', '$PWD\vs-install',
+              '--installPath', 'D:\vs-install',
               '--add', 'Microsoft.VisualStudio.Component.VC.14.44.17.14.x86.x64',
               '--includeRecommended',
               '--noUpdateInstaller',
@@ -33,15 +33,15 @@ jobs:
 
       - name: Verify installation
         run: |
-          if (Test-Path "$PWD\vs-install") {
+          if (Test-Path "D:\vs-install") {
             Write-Host "Installation directory exists"
-            Get-ChildItem "$PWD\vs-install" | Select-Object Name
-            if (Test-Path "$PWD\vs-install\VC\Tools\MSVC") {
+            Get-ChildItem "D:\vs-install" | Select-Object Name
+            if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
               Write-Host "VCTools installed successfully"
               ls
-              # if (Test-Path "$PWD\vs-install\VC\Tools\MSVC\14.40.33807") {
+              # if (Test-Path "D:\vs-install\VC\Tools\MSVC\14.40.33807") {
               #   Write-Host "14.40.33807 installed"
-              #   & "$PWD\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe"
+              #   & "D:\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe"
               # }
             } else {
               Write-Host "VCTools NOT found"
