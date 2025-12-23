@@ -9,8 +9,8 @@ jobs:
     steps:
       - name: Download Visual Studio Build Tools
         run: |
-          curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
-          # curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release.ltsc.17.10/vs_buildtools.exe
+          # curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release/vs_buildtools.exe
+          curl -L -o vs_buildtools.exe https://aka.ms/vs/17/release.ltsc.17.10/vs_buildtools.exe
 
       - name: Run bootstrapper
         timeout-minutes: 30
@@ -18,7 +18,7 @@ jobs:
           $process = Start-Process -FilePath ".\vs_buildtools.exe" `
             -ArgumentList @(
               '--installPath', 'D:\vs-install',
-              '--add', 'Microsoft.VisualStudio.Component.VC.14.44.17.14.x86.x64',
+              '--add', 'Microsoft.VisualStudio.Component.VC.14.40.17.10.x86.x64',
               '--includeRecommended',
               '--noUpdateInstaller',
               '--quiet',
@@ -38,9 +38,9 @@ jobs:
             Get-ChildItem "D:\vs-install" | Select-Object Name
             if (Test-Path "D:\vs-install\VC\Tools\MSVC") {
               Write-Host "VCTools installed successfully"
-              if (Test-Path "D:\vs-install\VC\Tools\MSVC\14.44.35207") {
-                Write-Host "14.44.35207 installed"
-                & "D:\vs-install\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe"
+              if (Test-Path "D:\vs-install\VC\Tools\MSVC\14.40.33807") {
+                Write-Host "14.40.33807 installed"
+                & "D:\vs-install\VC\Tools\MSVC\14.40.33807\bin\Hostx64\x64\cl.exe"
               }
             } else {
               Write-Host "VCTools NOT found"
