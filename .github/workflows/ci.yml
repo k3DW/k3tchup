@@ -15,13 +15,14 @@ jobs:
       - name: Run bootstrapper
         run: |
           .\vs_buildtools.exe `
-            --layout D:\vs-layout `
             --installPath D:\vs-install `
             --add Microsoft.VisualStudio.Workload.VCTools `
             --includeRecommended `
             --noUpdateInstaller `
             --quiet `
-            --norestart
+            --norestart `
+            --wait `
+            --nocache
 
           # $timeout = 3600
           # $elapsed = 0
@@ -57,3 +58,8 @@ jobs:
             Write-Host "=== $($log.Name) ==="
             Get-Content $log.FullName
           }
+
+      - name: Verify
+        run: |
+          ls D:\
+          ls D:\vs-install\
