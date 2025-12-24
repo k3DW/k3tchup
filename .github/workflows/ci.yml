@@ -15,7 +15,7 @@ jobs:
         with:
           vs-version: 14.40.17.10
           bootstrapper-url: https://download.visualstudio.microsoft.com/download/pr/4ae9ea68-8765-4182-8d40-577ce66203b5/14419bae89be9115f47610909a01bd55e75e2581b3abc3016c52728049c75d38/vs_BuildTools.exe
-          install-dir: $PWD\vs-install
+          install-dir: D:\a\k3tchup\vs-install
 
       # - name: Cache VS installation
       #   uses: actions/cache@v4
