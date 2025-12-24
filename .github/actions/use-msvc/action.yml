@@ -6,7 +6,7 @@ inputs:
   bootstrapper-url:
     required: true
   install-path:
-    default: D:\vs-install
+    default: ..\vs-install
 
 runs:
   using: "composite"
@@ -19,19 +19,20 @@ runs:
 
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
 
-        $process = Start-Process -FilePath ".\vs_buildtools.exe" `
+        Start-Process `
+          -FilePath ".\vs_buildtools.exe" `
           -ArgumentList @(
+            '--quiet', '--norestart',
             '--installPath', $installPath,
             '--add', 'Microsoft.VisualStudio.Component.VC.${{ inputs.vs-version }}.x86.x64',
             '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
             '--includeRecommended',
-            '--noUpdateInstaller',
-            '--quiet',
-            '--norestart'
+            '--noUpdateInstaller'
           ) `
           -NoNewWindow `
-          -PassThru `
           -Wait
+
+        rm .\vs_buildtools.exe
 
         cmd /c "call $installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
