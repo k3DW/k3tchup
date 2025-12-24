@@ -14,7 +14,7 @@ runs:
     - name: Download and install VS Build Tools
       shell: powershell
       run: |
-        ls
+        pwd
         Write-Host "testing testing 123"
 
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
