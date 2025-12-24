@@ -1,4 +1,4 @@
-name: use-msvc
+name: setup-msvc
 
 inputs:
   vs-version:

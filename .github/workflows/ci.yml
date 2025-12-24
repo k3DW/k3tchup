@@ -11,10 +11,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup MSVC
-        uses: ./.github/actions/use-msvc
+        uses: ./.github/actions/setup-msvc
         with:
-          vs-version: 14.40.17.10
-          bootstrapper-url: https://download.visualstudio.microsoft.com/download/pr/4ae9ea68-8765-4182-8d40-577ce66203b5/14419bae89be9115f47610909a01bd55e75e2581b3abc3016c52728049c75d38/vs_BuildTools.exe
+          vs-version: 14.43.17.13
+          bootstrapper-url: https://download.visualstudio.microsoft.com/download/pr/9b2a4ec4-2233-4550-bb74-4e7facba2e03/00f873e49619fc73dedb5f577e52c1419d058b9bf2d0d3f6a09d4c05058c3f79/vs_BuildTools.exe
 
       # - name: Cache VS installation
       #   uses: actions/cache@v4
