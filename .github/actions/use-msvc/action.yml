@@ -11,17 +11,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Cache VS installation
-      uses: actions/cache@v4
-      with:
-        path: |
-          ${{ inputs.install-dir }}
-        key: ${{ inputs.install-dir }}-${{ inputs.vs-version }}-temp0001
-
     - name: Download and install VS Build Tools
       shell: powershell
       run: |
-        # if (-Not (Test-Path "${{ inputs.install-dir }}")) {
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
 
         $process = Start-Process -FilePath ".\vs_buildtools.exe" `
@@ -39,8 +31,6 @@ runs:
           -Wait
 
         Write-Host "Process exited with code: $($process.ExitCode)"
-        # }
-
 
     - name: Set MSVC environment variables
       shell: powershell
