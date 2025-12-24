@@ -6,7 +6,7 @@ inputs:
   bootstrapper-url:
     required: true
   install-path:
-    default: "D:\\vs-install"
+    default: D:\vs-install
 
 runs:
   using: "composite"
@@ -14,6 +14,7 @@ runs:
     - name: Download and install VS Build Tools
       shell: powershell
       run: |
+        mkdir ${{ inputs.install-path }}
         $installPath = Resolve-Path ${{ inputs.install-path }}
 
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
