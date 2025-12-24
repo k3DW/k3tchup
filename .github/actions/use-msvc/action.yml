@@ -5,7 +5,7 @@ inputs:
     required: true
   bootstrapper-url:
     required: true
-  install-dir:
+  install-path:
     default: "D:\\vs-install"
 
 runs:
@@ -14,14 +14,13 @@ runs:
     - name: Download and install VS Build Tools
       shell: powershell
       run: |
-        pwd
-        Write-Host "testing testing 123"
+        $installPath = Resolve-Path ${{ inputs.install-path }}
 
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
 
         $process = Start-Process -FilePath ".\vs_buildtools.exe" `
           -ArgumentList @(
-            '--installPath', '${{ inputs.install-dir }}',
+            '--installPath', $installPath,
             '--add', 'Microsoft.VisualStudio.Component.VC.${{ inputs.vs-version }}.x86.x64',
             '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
             '--includeRecommended',
@@ -38,7 +37,7 @@ runs:
     - name: Set MSVC environment variables
       shell: powershell
       run: |
-        cmd /c "call ${{ inputs.install-dir }}\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+        cmd /c "call $installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
             if ($_ -match '^(.*?)=(.*)$') {
               "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
