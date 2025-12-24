@@ -11,7 +11,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download and install VS Build Tools
+    - name: Download and install VS Build Tools, and setup MSVC environment
       shell: powershell
       run: |
         mkdir ${{ inputs.install-path }}
@@ -33,11 +33,6 @@ runs:
           -PassThru `
           -Wait
 
-        Write-Host "Process exited with code: $($process.ExitCode)"
-
-    - name: Set MSVC environment variables
-      shell: powershell
-      run: |
         cmd /c "call $installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
             if ($_ -match '^(.*?)=(.*)$') {
