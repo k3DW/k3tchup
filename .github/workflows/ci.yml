@@ -7,6 +7,10 @@ jobs:
   install-msvc:
     runs-on: windows-2022
     steps:
+      - name: Testing
+        run: |
+          ls
+
       - name: Checkout code
         uses: actions/checkout@v4
 
