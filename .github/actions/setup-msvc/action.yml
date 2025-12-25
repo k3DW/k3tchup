@@ -22,7 +22,7 @@ runs:
     - name: Download and install VS Build Tools, and setup MSVC environment
       shell: powershell
       run: |
-        mkdir ${{ inputs.install-path }}
+        mkdir ${{ inputs.install-path }} -Force
         $installPath = Resolve-Path ${{ inputs.install-path }}
 
         curl.exe -L -o vs_buildtools.exe ${{ inputs.bootstrapper-url }}
