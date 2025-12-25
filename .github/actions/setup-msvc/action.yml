@@ -15,8 +15,8 @@ runs:
       uses: actions/cache@v4
       with:
         path: |
-          D:\vs-install
-        key: сaching-key-0002
+          ${{ inputs.install-path }}
+        key: сaching-key-0003
 
     - name: Download and install VS Build Tools, and setup MSVC environment
       shell: powershell
