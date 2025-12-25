@@ -11,6 +11,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Cache VS installation
+      uses: actions/cache@v4
+      with:
+        path: |
+          D:\vs-install
+        key: сaching-key-0002
+
     - name: Download and install VS Build Tools, and setup MSVC environment
       shell: powershell
       run: |
