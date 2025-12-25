@@ -48,3 +48,5 @@ include(cmake/discover_tests.cmake)
 if (K3TCHUP_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
+
+add_executable(main main.cpp)
