@@ -36,7 +36,8 @@ runs:
 
         cmd /c "$installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
-            if ($_ -match '^(.*?)=(.*)$') {
-              Add-Content -Path $env:GITHUB_ENV -Value $_ -Encoding utf8
-            }
+            Add-Content `
+              -Value $_ `
+              -Path $env:GITHUB_ENV `
+              -Encoding utf8
           }
