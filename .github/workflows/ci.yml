@@ -26,4 +26,4 @@ jobs:
           cd build
           cmake ..
           cmake --build . --target main
-          .\build\Debug\main.exe
+          & .\build\Debug\main.exe
