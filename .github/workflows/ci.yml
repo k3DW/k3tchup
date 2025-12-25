@@ -26,4 +26,4 @@ jobs:
           cd build
           cmake ..
           cmake --build . --target main
-          & .\build\Debug\main.exe
+          & D:\a\k3tchup\k3tchup\build\Debug\main.exe
