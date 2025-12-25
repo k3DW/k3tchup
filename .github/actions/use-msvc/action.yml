@@ -34,7 +34,7 @@ runs:
 
         rm .\vs_buildtools.exe
 
-        cmd /c "call $installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
+        cmd /c "$installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
             if ($_ -match '^(.*?)=(.*)$') {
               "$($matches[1])=$($matches[2])" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
