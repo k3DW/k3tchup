@@ -1,4 +1,7 @@
-name: setup-msvc
+# Copyright 2025 Braden Ganetsky
+name: 'Setup MSVC'
+description: 'Downloads, installs, and sets up the environment for a particular version of MSVC'
+author: 'Braden Ganetsky'
 
 inputs:
   vs-version:
@@ -11,14 +14,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Cache VS installation
-      uses: actions/cache@v4
-      with:
-        path: |
-          D:\a\k3tchup\vs-install
-        key: сaching-key-0004
-
-
     - name: Download and install VS Build Tools, and setup MSVC environment
       shell: powershell
       run: |
