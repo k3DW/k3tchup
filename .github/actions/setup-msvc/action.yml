@@ -36,8 +36,5 @@ runs:
 
         cmd /c "$installPath\VC\Auxiliary\Build\vcvars64.bat >nul && set" |
           ForEach-Object {
-            Add-Content `
-              -Value $_ `
-              -Path $env:GITHUB_ENV `
-              -Encoding utf8
+            Add-Content $env:GITHUB_ENV $_
           }
