@@ -13,7 +13,7 @@ jobs:
       - name: Setup MSVC
         uses: k3DW/setup-msvc@dev
         with:
-          vs-version: 17.0.0
+          vs-version: 16.9
 
       - name: Check cl
         run: |
@@ -23,6 +23,6 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake ..
+          cmake .. -G "Visual Studio 16 2019"
           cmake --build . --target main
           & D:\a\k3tchup\k3tchup\build\Debug\main.exe
