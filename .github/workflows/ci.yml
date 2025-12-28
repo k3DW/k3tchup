@@ -13,7 +13,7 @@ jobs:
       - name: Setup MSVC
         uses: k3DW/setup-msvc@dev
         with:
-          vs-version: 17
+          vs-version: 16.9
 
       - name: Check cl
         run: |
