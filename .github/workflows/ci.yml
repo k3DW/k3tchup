@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup MSVC
-        uses: k3DW/setup-msvc@main
+        uses: k3DW/setup-msvc@dev
         with:
           vs-version: 17.13.3
 
