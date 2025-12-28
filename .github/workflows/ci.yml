@@ -7,10 +7,6 @@ jobs:
   install-msvc:
     runs-on: windows-2025
     steps:
-      - name: Check CMake
-        run: |
-          cmake --version
-
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -27,6 +23,6 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake .. -G "Visual Studio 18 2026"
+          cmake ..
           cmake --build . --target main
           & D:\a\k3tchup\k3tchup\build\Debug\main.exe
