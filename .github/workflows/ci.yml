@@ -5,8 +5,12 @@ on:
 
 jobs:
   install-msvc:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
+      - name: Check CMake
+        run: |
+          cmake --version
+
       - name: Checkout code
         uses: actions/checkout@v4
 
