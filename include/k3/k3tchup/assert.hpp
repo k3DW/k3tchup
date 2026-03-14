@@ -60,7 +60,7 @@ consteval bool eval_condition(bool b) {
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                     \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                     \
         K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),                  \
-        __COUNTER__,                                                      \
+        __LINE__,                                                         \
         __VA_ARGS__                                                       \
     )
 
