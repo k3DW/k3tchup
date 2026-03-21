@@ -40,27 +40,33 @@ consteval bool eval_condition(bool b) {
 
 
 
-#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, COUNTER, ...) \
-    switch(0) case 0: default:                                                                \
-    if (                                                                                      \
-        const auto K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER) = ::k3::k3tchup::context::check(   \
-            ::k3::k3tchup::detail::eval_condition(MAKE_CT(bool{(CONDITION)})),                \
-            MAKE_RT(bool{(CONDITION)})                                                        \
-        );                                                                                    \
-        K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER)                                               \
-    ) {                                                                                       \
-        K3_K3TCHUP_EVAL_BOOL_(DEPENDENT_CONDITION,                                            \
-            K3_K3TCHUP_IS_EMPTY_(__VA_ARGS__))(CONDITION, __VA_ARGS__)                        \
-    }                                                                                         \
-    else                                                                                      \
-        MAKE_ERROR(K3_K3TCHUP_CAT_(_k3tchup_res_, COUNTER))
+#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, UNIQUE_ID, ...) \
+    switch(0) case 0: default:                                                                  \
+    if (                                                                                        \
+        const auto UNIQUE_ID = ::k3::k3tchup::context::check(                                   \
+            ::k3::k3tchup::detail::eval_condition(MAKE_CT(bool{(CONDITION)})),                  \
+            MAKE_RT(bool{(CONDITION)})                                                          \
+        );                                                                                      \
+        UNIQUE_ID                                                                               \
+    ) {                                                                                         \
+        K3_K3TCHUP_EVAL_BOOL_(DEPENDENT_CONDITION,                                              \
+            K3_K3TCHUP_IS_EMPTY_(__VA_ARGS__))(CONDITION, __VA_ARGS__)                          \
+    }                                                                                           \
+    else                                                                                        \
+        MAKE_ERROR(UNIQUE_ID)
+
+#if defined(__clang__) && __clang_major__ >= 22
+#define K3_K3TCHUP_UNIQUE_IDENTIFIER_(PREFIX) K3_K3TCHUP_CAT_(PREFIX, __LINE__)
+#else
+#define K3_K3TCHUP_UNIQUE_IDENTIFIER_(PREFIX) K3_K3TCHUP_CAT_(PREFIX, __COUNTER__)
+#endif
 
 #define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL, ...) \
     K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                             \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                     \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                     \
         K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),                  \
-        __LINE__,                                                         \
+        K3_K3TCHUP_UNIQUE_IDENTIFIER_(_k3_k3tchup_),                      \
         __VA_ARGS__                                                       \
     )
 
