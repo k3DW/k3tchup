@@ -1,4 +1,4 @@
-// Copyright 2025 Braden Ganetsky
+// Copyright 2025-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
@@ -69,8 +69,8 @@ TEST("vector of optionals", "compile-time basic") {
 // an explicit index. This test does much more computation than the "basic" test
 // above, but the error messages are more descriptive. It's necessary to call
 // `vec()` frequently time, since we can't store a std::vector at compile-time.
-// Note: The if-constexpr trick here only works in a dependent context. Outside
-// of a template, this will not compile.
+// Note: The if-constexpr trick here previously only worked in a dependent context.
+// Now you can write this without the `if constexpr`. See the "ideal syntax" test.
 TEST("vector of optionals", "compile-time manual iteration, if-constexpr") {
   auto one_element = []<std::size_t I>(std::integral_constant<std::size_t, I>) {
     ASSERT_COMPILE_AND_RUN_TIME(vec()[I].has_value()) << "optional did not have a value";
@@ -93,6 +93,22 @@ TEST("vector of optionals", "compile-time manual iteration, dependent check") {
       EXPECT_COMPILE_AND_RUN_TIME(*vec()[I] == 5)
         << "optional's value was not 5, it was " << *vec()[I]
     ) << "optional did not have a value";
+  };
+  one_element(std::integral_constant<std::size_t, 0>{});
+  one_element(std::integral_constant<std::size_t, 1>{});
+  one_element(std::integral_constant<std::size_t, 2>{});
+}
+
+// This test does the same thing as the if-constexpr test and the dependent check
+// test, but with the ideal syntax. Here, you can simply write an `ASSERT` followed
+// by an `EXPECT` in straight-line code, even though the first condition failing
+// should cause the second condition to fail to compile at all. The key is that every
+// compile-time check is now secretly dependent on there not having been a fatal
+// compile-time error previously in the same function.
+TEST("vector of optionals", "compile-time manual iteration, ideal syntax") {
+  auto one_element = []<std::size_t I>(std::integral_constant<std::size_t, I>) {
+    ASSERT_COMPILE_AND_RUN_TIME(vec()[I].has_value()) << "optional did not have a value";
+    EXPECT_COMPILE_AND_RUN_TIME(*vec()[I] == 5) << "optional's value was not 5, it was " << *vec()[I];
   };
   one_element(std::integral_constant<std::size_t, 0>{});
   one_element(std::integral_constant<std::size_t, 1>{});
