@@ -62,10 +62,10 @@ _Note, at this time, the macros related to compile-time checking do not `static_
 
 `k3tchup` also comes with 2 higher level macros
 
-* `ASSERT_THAT(fragment)`
-* `EXPECT_THAT(fragment)`
+* `ASSERT_THAT(packet)`
+* `EXPECT_THAT(packet)`
 
-These macros take a "fragment", which is a simplified version of a matcher. The "fragment" must be an object that is callable with zero arguments. That is, `fragment()` must be valid.
+These macros take a "packet", which is a simplified version of a matcher. The "packet" must be an object that is callable with zero arguments. That is, `packet()` must be valid.
 
 Here is an example.
 

@@ -116,21 +116,21 @@ concept has_error = requires {
 
 // ASSERT_THAT does not ignore its internal non-fatal errors,
 // and treats them as fatal errors.
-#define ASSERT_THAT(FRAGMENT)                                                          \
+#define ASSERT_THAT(PACKET)                                                            \
     {                                                                                  \
         ::k3::k3tchup::context::trace_context _k3tchup_ctx_;                           \
         const std::size_t _k3tchup_starting_ = ::k3::k3tchup::context::total_errors(); \
-        (FRAGMENT)();                                                                  \
+        (PACKET)();                                                                    \
         const std::size_t _k3tchup_ending_ = ::k3::k3tchup::context::total_errors();   \
         if (_k3tchup_ending_ != _k3tchup_starting_)                                    \
             return;                                                                    \
     } static_assert(true, "require semicolon")
 
 // EXPECT_THAT ignores all the internal errors.
-#define EXPECT_THAT(FRAGMENT)                                \
+#define EXPECT_THAT(PACKET)                                  \
     {                                                        \
         ::k3::k3tchup::context::trace_context _k3tchup_ctx_; \
-        (FRAGMENT)();                                        \
+        (PACKET)();                                          \
     } static_assert(true, "require semicolon")
 
 #endif // K3_K3TCHUP_ASSERT_HPP
