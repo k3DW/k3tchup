@@ -56,8 +56,10 @@ concept has_error = requires {
     }                                                                      \
     static_assert(true, "require semicolon")
 
-#define K3_K3TCHUP_DEPENDENT_CONDITION_0_(CONDITION, ARG) \
-    if constexpr (CONDITION) { ARG; }
+#define K3_K3TCHUP_DEPENDENT_CONDITION_0_(CONDITION, ARG)             \
+    ([&]<class T>(T) {                                                \
+        if constexpr ((sizeof(T)==sizeof(int)) && CONDITION) { ARG; } \
+    }(0));
 #define K3_K3TCHUP_DEPENDENT_CONDITION_1_(...) \
     (void)0;
 
