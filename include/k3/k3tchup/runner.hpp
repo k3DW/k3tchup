@@ -1,4 +1,4 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
@@ -10,8 +10,10 @@
 
 namespace k3::k3tchup {
 
-class test;
-class fixture;
+namespace detail {
+    class test;
+    class fixture;
+} // namespace detail
 
 class runner
 {
@@ -20,13 +22,13 @@ public:
 
     int exec(int argc, const char* const argv[]);
 
-    bool add(fixture& fixture);
-    bool add(std::string_view fixture_name, test&& t);
+    bool add(detail::fixture& fixture);
+    bool add(std::string_view fixture_name, detail::test&& t);
 
 private:
     runner() = default;
 
-    std::map<std::string_view, fixture*> _fixtures;
+    std::map<std::string_view, detail::fixture*> _fixtures;
 };
 
 } // namespace k3::k3tchup

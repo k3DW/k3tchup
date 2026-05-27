@@ -1,61 +1,34 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
 #ifndef K3_K3TCHUP_TEST_HPP
 #define K3_K3TCHUP_TEST_HPP
 
-#include <iosfwd>
-#include <string>
-#include <string_view>
-#include <k3/k3tchup/hash.hpp>
+#include <cstddef>
+#include <type_traits>
+#include <k3/k3tchup/detail/fixture.hpp>
+#include <k3/k3tchup/detail/hash.hpp>
+#include <k3/k3tchup/detail/test.hpp>
+#include <k3/k3tchup/runner.hpp>
 
-namespace k3::k3tchup {
-
-struct test_result;
-
-class test
-{
-public:
-    std::string_view name() const
-    {
-        return _name;
-    }
-
-    test_result run(std::ostream& os) const;
-
-    using func_type = void(*)();
-
-    template <std::size_t N>
-    test(const char(&name)[N], func_type func)
-        : _name(name), _func(func) {}
-
-private:
-    std::string_view _name; // This is fine because we only construct with a string literal
-    func_type _func;
-};
-
-} // namespace k3::k3tchup
-
-
-
-#define TEST(FIXTURE_NAME, NAME)                                                      \
-    template <std::size_t hash>                                                       \
-    class test_impl_;                                                                 \
-    template <std::size_t hash>                                                       \
-    class fixture_impl_;                                                              \
-    template <>                                                                       \
-    class test_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME, NAME)>                  \
-    {                                                                                 \
-    private:                                                                          \
-        static_assert(                                                                \
-            std::is_base_of_v<::k3::k3tchup::fixture,                                 \
-                fixture_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME)>>,             \
-            "Fixture \"" FIXTURE_NAME "\" has not been declared in this namespace."); \
-        static void _run();                                                           \
-        static inline const bool _init = ::k3::k3tchup::runner::get()                 \
-            .add(FIXTURE_NAME, ::k3::k3tchup::test(NAME, &_run));                     \
-    };                                                                                \
-    void test_impl_<::k3::k3tchup::simple_hash(FIXTURE_NAME, NAME)>::_run()
+#define TEST(FIXTURE_NAME, NAME)                                                                            \
+    template <std::size_t hash>                                                                             \
+    class _k3_k3tchup_test_impl_;                                                                           \
+    template <std::size_t hash>                                                                             \
+    class _k3_k3tchup_fixture_impl_;                                                                        \
+    template <>                                                                                             \
+    class _k3_k3tchup_test_impl_<::k3::k3tchup::detail::simple_hash(FIXTURE_NAME, NAME)>                    \
+    {                                                                                                       \
+    private:                                                                                                \
+        static_assert(                                                                                      \
+            std::is_base_of_v<::k3::k3tchup::detail::fixture,                                               \
+                _k3_k3tchup_fixture_impl_<::k3::k3tchup::detail::simple_hash(FIXTURE_NAME)>>,               \
+            "Fixture \"" FIXTURE_NAME "\" has not been declared in this namespace.");                       \
+        static void _k3_k3tchup_run_();                                                                     \
+        static inline const bool _k3_k3tchup_init_ = ::k3::k3tchup::runner::get()                           \
+            .add(FIXTURE_NAME, ::k3::k3tchup::detail::test(NAME, &_k3_k3tchup_run_));                       \
+    };                                                                                                      \
+    void _k3_k3tchup_test_impl_<::k3::k3tchup::detail::simple_hash(FIXTURE_NAME, NAME)>::_k3_k3tchup_run_()
 
 #endif // K3_K3TCHUP_TEST_HPP

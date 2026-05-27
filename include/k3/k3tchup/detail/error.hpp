@@ -1,16 +1,16 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#ifndef K3_K3TCHUP_ERROR_HPP
-#define K3_K3TCHUP_ERROR_HPP
+#ifndef K3_K3TCHUP_DETAIL_ERROR_HPP
+#define K3_K3TCHUP_DETAIL_ERROR_HPP
 
+#include <iosfwd>
 #include <source_location>
-#include <string_view>
 #include <string>
 #include <vector>
 
-namespace k3::k3tchup {
+namespace k3::k3tchup::detail {
 
 enum class error_time
 {
@@ -38,6 +38,6 @@ struct error
 
 void print(std::ostream& os, const error& e);
 
-} // namespace k3::k3tchup
+} // namespace k3::k3tchup::detail
 
-#endif // K3_K3TCHUP_ERROR_HPP
+#endif // K3_K3TCHUP_DETAIL_ERROR_HPP

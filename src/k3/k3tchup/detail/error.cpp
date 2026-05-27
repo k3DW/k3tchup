@@ -1,11 +1,11 @@
-// Copyright 2024-2025 Braden Ganetsky
+// Copyright 2024-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
 #include <k3/k3tchup.hpp>
 #include <iostream>
 
-namespace k3::k3tchup {
+namespace k3::k3tchup::detail {
 
 namespace {
 
@@ -71,4 +71,4 @@ void print(std::ostream& os, const error& e)
     }
 }
 
-} // namespace k3::k3tchup
+} // namespace k3::k3tchup::detail

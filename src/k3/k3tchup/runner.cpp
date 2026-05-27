@@ -1,13 +1,13 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
 #include <k3/k3tchup.hpp>
-#include <k3/k3tchup/runner.hpp>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <optional>
+#include <string_view>
 
 namespace k3::k3tchup {
 
@@ -17,13 +17,13 @@ runner& runner::get()
     return r;
 }
 
-bool runner::add(fixture& fixture)
+bool runner::add(detail::fixture& fixture)
 {
     _fixtures.emplace(fixture.name(), &fixture);
     return true;
 }
 
-bool runner::add(std::string_view fixture_name, test&& t)
+bool runner::add(std::string_view fixture_name, detail::test&& t)
 {
     _fixtures.at(fixture_name)->add_test(std::move(t));
     return true;
@@ -61,12 +61,12 @@ int runner::exec(const int argc, const char* const argv[])
         else if (args.size() == 2)
         {
 RUN_ALL_TESTS:
-            std::vector<fixture_result> passes;
-            std::vector<fixture_result> failures;
+            std::vector<detail::fixture_result> passes;
+            std::vector<detail::fixture_result> failures;
             std::size_t total_test_failures = 0;
             for (auto [_, fixture] : _fixtures)
             {
-                fixture_result result = fixture->run(std::cout);
+                detail::fixture_result result = fixture->run(std::cout);
                 total_test_failures += result.failures.size();
                 if (result.failures.empty())
                     passes.push_back(std::move(result));
@@ -86,7 +86,7 @@ RUN_ALL_TESTS:
                 std::cout
                     << "================================\n\n"
                     << total_test_failures << " test" << (total_test_failures == 1 ? "" : "s") << " failed.\n\n";
-                for (const fixture_result& result : failures)
+                for (const detail::fixture_result& result : failures)
                 {
                     result.print_errors(std::cout);
                 }
@@ -102,8 +102,8 @@ RUN_ALL_TESTS:
                 return EXIT_FAILURE;
             }
 
-            fixture* const f = it->second;
-            const fixture_result result = (args.size() == 3)
+            detail::fixture* const f = it->second;
+            const detail::fixture_result result = (args.size() == 3)
                 ? f->run(std::cout)
                 : f->run(std::cout, args[3]);
 

@@ -1,4 +1,4 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace k3::k3tchup {
+namespace k3::k3tchup::detail {
 
 void test_result::print_brief(std::ostream& os) const
 {
@@ -54,51 +54,4 @@ void fixture_result::print_errors(std::ostream& os) const
     os << "\n";
 }
 
-context::test_result_context::test_result_context(test_result& result)
-{
-    if (_current_result != nullptr)
-    {
-        throw std::logic_error("Nested test_result_context is not allowed.");
-    }
-    _current_result = &result;
-}
-
-context::test_result_context::~test_result_context()
-{
-    _current_result = nullptr;
-}
-
-context::message_streaming_context context::add_error(check_result result, error_fatality fatality, std::source_location location)
-{
-    if (result)
-    {
-        throw std::logic_error("At least one of compile_time or run_time must be false.");
-    }
-
-    std::vector<std::source_location> trace;
-    trace = _trace;
-    trace.push_back(std::move(location));
-    ++_total_errors;
-
-    const error_time time =
-        (not result.compile_time and not result.run_time) ? error_time::both :
-        (not result.compile_time) ? error_time::compile_time : error_time::run_time;
-    error& e = _current_result->errors.emplace_back(time, fatality, std::move(trace));
-    return message_streaming_context{e.message};
-}
-
-check_result context::check(bool compile_time, bool run_time)
-{
-    ++_current_result->checks;
-    return {
-        .compile_time = compile_time,
-        .run_time = run_time,
-    };
-}
-
-std::size_t context::total_errors()
-{
-    return _total_errors;
-}
-
-} // namespace k3::k3tchup
+} // namespace k3::k3tchup::detail

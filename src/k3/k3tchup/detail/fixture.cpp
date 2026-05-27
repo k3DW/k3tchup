@@ -1,4 +1,4 @@
-// Copyright 2023-2025 Braden Ganetsky
+// Copyright 2023-2026 Braden Ganetsky
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <iostream>
 
-namespace k3::k3tchup {
+namespace k3::k3tchup::detail {
 
 void fixture::add_test(test&& t)
 {
@@ -56,4 +56,4 @@ void fixture::list(std::ostream& os) const
     }
 }
 
-} // namespace k3::k3tchup
+} // namespace k3::k3tchup::detail

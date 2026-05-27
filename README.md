@@ -22,9 +22,9 @@ See `"./examples/vector_of_optionals.cpp"` for a basic usage example.
 
 ### Getting started
 
-Each test file should include `<k3/k3tchup.hpp>`. One of your files should include `<k3/k3tchup_main.hpp>`, which creates the `main()` function for you.
+Each test file should include `<k3/k3tchup.hpp>`. One of your files should include `<k3/k3tchup_main.hpp>`, which creates the `main()` function for you. Otherwise, `k3::k3tchup::runner` can be used directly, in place of including `<k3/k3tchup_main.hpp>`.
 
-* All of `k3tchup`'s machinery is in the namespace `::k3::k3tchup`, but this isn't relevant for using the library.
+This library mostly consists of the user-facing macros `FIXTURE`, `TEST`, and the various `ASSERT_*` and `EXPECT_*` checking macros.
 
 ### Fixtures and tests
 

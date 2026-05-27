@@ -2,13 +2,13 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#ifndef K3_K3TCHUP_HASH_HPP
-#define K3_K3TCHUP_HASH_HPP
+#ifndef K3_K3TCHUP_DETAIL_HASH_HPP
+#define K3_K3TCHUP_DETAIL_HASH_HPP
 
 #include <bit>
 #include <string_view>
 
-namespace k3::k3tchup {
+namespace k3::k3tchup::detail {
 
 constexpr std::size_t simple_hash(std::string_view s) {
     std::size_t hash = 0;
@@ -33,6 +33,6 @@ constexpr std::size_t function_name_hash(std::string_view s) {
     return simple_hash(s);
 }
 
-} // namespace k3::k3tchup
+} // namespace k3::k3tchup::detail
 
-#endif // K3_K3TCHUP_HASH_HPP
+#endif // K3_K3TCHUP_DETAIL_HASH_HPP
