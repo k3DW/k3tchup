@@ -56,36 +56,26 @@ concept has_error = requires {
     }                                                                      \
     static_assert(true, "require semicolon")
 
-#define K3_K3TCHUP_DEPENDENT_CONDITION_0_(CONDITION, ARG)             \
-    ([&]<class T>(T) {                                                \
-        if constexpr ((sizeof(T)==sizeof(int)) && CONDITION) { ARG; } \
-    }(0));
-#define K3_K3TCHUP_DEPENDENT_CONDITION_1_(...) \
-    (void)0;
 
 
-
-#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, CHECK_CT_ERROR, UNIQUE_ID, ...) \
-    switch(0) case 0: default:                                                                                  \
-    if (                                                                                                        \
-        const auto UNIQUE_ID = ::k3::k3tchup::context::check(                                                   \
-            [&]<class _k3_k3tchup_type_parameter_>(_k3_k3tchup_type_parameter_) consteval {                     \
-                if constexpr (::k3::k3tchup::detail::has_error<_k3_k3tchup_type_parameter_>) {                  \
-                    return true;                                                                                \
-                } else {                                                                                        \
-                    CHECK_CT_ERROR(MAKE_CT(bool{(CONDITION)}), _k3_k3tchup_type_parameter_);                    \
-                }                                                                                               \
-            }(std::integral_constant<std::size_t,                                                               \
-                ::k3::k3tchup::function_name_hash(std::source_location::current().function_name())>{})          \
-            ,                                                                                                   \
-            MAKE_RT(bool{(CONDITION)})                                                                          \
-        );                                                                                                      \
-        UNIQUE_ID                                                                                               \
-    ) {                                                                                                         \
-        K3_K3TCHUP_EVAL_BOOL_(DEPENDENT_CONDITION,                                                              \
-            K3_K3TCHUP_IS_EMPTY_(__VA_ARGS__))(CONDITION, __VA_ARGS__)                                          \
-    }                                                                                                           \
-    else                                                                                                        \
+#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, CHECK_CT_ERROR, UNIQUE_ID) \
+    switch(0) case 0: default:                                                                             \
+    if (                                                                                                   \
+        const auto UNIQUE_ID = ::k3::k3tchup::context::check(                                              \
+            [&]<class _k3_k3tchup_type_parameter_>(_k3_k3tchup_type_parameter_) consteval {                \
+                if constexpr (::k3::k3tchup::detail::has_error<_k3_k3tchup_type_parameter_>) {             \
+                    return true;                                                                           \
+                } else {                                                                                   \
+                    CHECK_CT_ERROR(MAKE_CT(bool{(CONDITION)}), _k3_k3tchup_type_parameter_);               \
+                }                                                                                          \
+            }(std::integral_constant<std::size_t,                                                          \
+                ::k3::k3tchup::function_name_hash(std::source_location::current().function_name())>{})     \
+            ,                                                                                              \
+            MAKE_RT(bool{(CONDITION)})                                                                     \
+        );                                                                                                 \
+        UNIQUE_ID                                                                                          \
+    ) {}                                                                                                   \
+    else                                                                                                   \
         MAKE_ERROR(UNIQUE_ID)
 
 #if defined(__clang__) && __clang_major__ >= 22
@@ -94,23 +84,22 @@ concept has_error = requires {
 #define K3_K3TCHUP_UNIQUE_IDENTIFIER_(PREFIX) K3_K3TCHUP_CAT_(PREFIX, __COUNTER__)
 #endif
 
-#define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL, ...) \
-    K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                             \
-        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                     \
-        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                     \
-        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),                  \
-        K3_K3TCHUP_EVAL_BOOL_(CHECK_CT_ERROR, IS_FATAL),                  \
-        K3_K3TCHUP_UNIQUE_IDENTIFIER_(_k3_k3tchup_),                      \
-        __VA_ARGS__                                                       \
+#define K3_K3TCHUP_GENERIC_CHECK_(CONDITION, IS_CT, IS_RT, IS_FATAL) \
+    K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                        \
+        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                \
+        K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                \
+        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),             \
+        K3_K3TCHUP_EVAL_BOOL_(CHECK_CT_ERROR, IS_FATAL),             \
+        K3_K3TCHUP_UNIQUE_IDENTIFIER_(_k3_k3tchup_)                  \
     )
 
-#define ASSERT_COMPILE_TIME(CONDITION, ...)         K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 0, 1, __VA_ARGS__)
-#define ASSERT_RUN_TIME(CONDITION, ...)             K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 0, 1, 1, __VA_ARGS__)
-#define ASSERT_COMPILE_AND_RUN_TIME(CONDITION, ...) K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 1, 1, __VA_ARGS__)
+#define ASSERT_COMPILE_TIME(CONDITION)         K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 0, 1)
+#define ASSERT_RUN_TIME(CONDITION)             K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 0, 1, 1)
+#define ASSERT_COMPILE_AND_RUN_TIME(CONDITION) K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 1, 1)
 
-#define EXPECT_COMPILE_TIME(CONDITION, ...)         K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 0, 0, __VA_ARGS__)
-#define EXPECT_RUN_TIME(CONDITION, ...)             K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 0, 1, 0, __VA_ARGS__)
-#define EXPECT_COMPILE_AND_RUN_TIME(CONDITION, ...) K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 1, 0, __VA_ARGS__)
+#define EXPECT_COMPILE_TIME(CONDITION)         K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 0, 0)
+#define EXPECT_RUN_TIME(CONDITION)             K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 0, 1, 0)
+#define EXPECT_COMPILE_AND_RUN_TIME(CONDITION) K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 1, 0)
 
 
 
