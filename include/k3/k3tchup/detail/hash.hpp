@@ -24,6 +24,7 @@ constexpr std::size_t simple_hash(std::string_view s1, std::string_view s2) {
 
 constexpr std::size_t function_name_hash(std::string_view s) {
 #ifdef _MSC_VER
+    // https://developercommunity.visualstudio.com/t/__builtin_FUNCSIG-gives-different-resu/11069467
     constexpr std::string_view to_find = " __cdecl ";
     const std::size_t pos = s.find(to_find);
     if (pos != std::string_view::npos) {
