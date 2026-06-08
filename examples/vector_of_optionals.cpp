@@ -55,7 +55,7 @@ TEST("vector of optionals", "run-time short-circuit alt") {
 // _only_ twice. This sacrifices message readability, since this example doesn't
 // have any specifics for what went wrong upon hitting an error.
 TEST("vector of optionals", "compile-time basic") {
-  EXPECT_COMPILE_AND_RUN_TIME(([]() -> bool {
+  EXPECT(([]() -> bool {
     bool success = true;
     for (const std::optional<int>& x : vec()) {
       success = success && x.has_value();
@@ -76,10 +76,39 @@ TEST("vector of optionals", "compile-time basic") {
 // compile-time error previously in the same function.
 TEST("vector of optionals", "compile-time manual iteration") {
   auto one_element = []<std::size_t I>(std::integral_constant<std::size_t, I>) {
-    ASSERT_COMPILE_AND_RUN_TIME(vec()[I].has_value()) << "optional did not have a value";
-    EXPECT_COMPILE_AND_RUN_TIME(*vec()[I] == 5) << "optional's value was not 5, it was " << *vec()[I];
+    ASSERT(vec()[I].has_value()) << "optional did not have a value";
+    EXPECT(*vec()[I] == 5) << "optional's value was not 5, it was " << *vec()[I];
   };
   one_element(std::integral_constant<std::size_t, 0>{});
   one_element(std::integral_constant<std::size_t, 1>{});
   one_element(std::integral_constant<std::size_t, 2>{});
+}
+
+// In this test, we want an entire sequence of checks to execute at compile-time,
+// independently of those checks later executing at run-time. In this case, a
+// lambda that accepts an lvalue `k3::k3tchup::state` is used in `EXPECT_THAT`.
+// Doing it this way, we don't need to worry about subsequent checks not having
+// any knowledge of a previous check failing, since the entire body of the lambda
+// is fully executed at compile-time or at run-time, rather than each individual
+// check.
+TEST("vector of optionals", "stateful checks") {
+  EXPECT_THAT([](auto& state) {
+    for (const auto& o : vec()) {
+      [&] {
+        ASSERT(state, o.has_value()) << "optional did not have a value";
+        EXPECT(state, *o == 5) << "optional's value was not 5";
+      }();
+    }
+  });
+}
+
+// This test is equivalent to the above test, but it introduces the state
+// variable via the `TEST_CONSTEXPR` macro instead.
+TEST_CONSTEXPR("vector of optionals", "stateful test", state) {
+  for (const auto& o : vec()) {
+    [&] {
+      ASSERT(state, o.has_value()) << "optional did not have a value";
+      EXPECT(state, *o == 5) << "optional's value was not 5";
+    }();
+  }
 }

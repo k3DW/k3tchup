@@ -10,8 +10,8 @@ namespace k3::k3tchup::detail {
 class void_assigner
 {
 public:
-    void_assigner() = default;
-    void operator=(auto&&) const {}
+    constexpr void_assigner() = default;
+    constexpr void operator=(auto&&) const {}
 };
 
 } // namespace k3::k3tchup::detail
