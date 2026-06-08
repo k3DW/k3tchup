@@ -39,7 +39,7 @@
     } static_assert(true, "require semicolon")
 
 #define ASSERT_DEDUCE(S, CONDITION)                       \
-    switch (0) case 0: default:                           \
+    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                    \
     if (                                                  \
         ::k3::k3tchup::detail::state_accessor::check(S,   \
             ::k3::k3tchup::detail::error_fatality::fatal, \
@@ -49,7 +49,7 @@
       return
 
 #define EXPECT_DEDUCE(S, CONDITION)                           \
-    switch (0) case 0: default:                               \
+    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                        \
     if (                                                      \
         ::k3::k3tchup::detail::state_accessor::check(S,       \
             ::k3::k3tchup::detail::error_fatality::non_fatal, \

@@ -27,6 +27,15 @@
 
 
 
+// https://developercommunity.visualstudio.com/t/Constexpr-skipping-evaluation-of-switch/11094500
+#ifdef _MSC_VER
+#define K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_
+#else
+#define K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_ switch (0) case 0: default:
+#endif
+
+
+
 #define K3_K3TCHUP_EVAL_CONDITION_0_(CONDITION) (true)
 #define K3_K3TCHUP_EVAL_CONDITION_1_(CONDITION) (CONDITION)
 
