@@ -144,17 +144,15 @@
     }();                                                                                        \
     ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_)
 
-#define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                                    \
-    [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {                    \
-        if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                                          \
-            (PACKET)();                                                                                    \
-        } else if constexpr (                                                                              \
-            requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<::k3::k3tchup::state&>()); }) \
-        {                                                                                                  \
-            K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                                      \
-        } else {                                                                                           \
-            static_assert(false);                                                                          \
-        }                                                                                                  \
+#define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                         \
+    [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {         \
+        if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                               \
+            (PACKET)();                                                                         \
+        } else if constexpr (std::invocable<_k3_k3tchup_packet_type_, ::k3::k3tchup::state&>) { \
+            K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                           \
+        } else {                                                                                \
+            static_assert(false);                                                               \
+        }                                                                                       \
     }(std::type_identity<decltype(PACKET)>{})
 
 #endif // K3_K3TCHUP_MACROS_HPP
