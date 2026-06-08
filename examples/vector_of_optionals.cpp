@@ -85,7 +85,7 @@ TEST("vector of optionals", "compile-time manual iteration") {
 }
 
 TEST("vector of optionals", "stateful checks") {
-  EXPECT_THAT_2([](k3::k3tchup::state& s) {
+  EXPECT_THAT([](k3::k3tchup::state& s) {
     for (const auto& o : vec()) {
       [&] {
         ASSERT_DEDUCE(s, o.has_value()) << "optional did not have a value";

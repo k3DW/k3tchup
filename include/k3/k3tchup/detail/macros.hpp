@@ -116,4 +116,48 @@
         K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY_RETURN, IS_FATAL)         \
     )
 
+
+
+namespace k3::k3tchup::detail {
+
+template <class F>
+constexpr void call_packet(F f) {
+    // This condition can't be with SFINAE, otherwise K3_K3TCHUP_EXEC_PACKET_ doesn't work
+    if constexpr (std::invocable<F>) {
+        std::forward<F>(f)();
+    }
+}
+
+} // namespace k3::k3tchup::detail
+
+#define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                                              \
+    [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {                              \
+        if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                                                    \
+            ::k3::k3tchup::detail::call_packet(PACKET);                                                              \
+        } else if constexpr (                                                                                        \
+            requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<::k3::k3tchup::state&>()); } and        \
+            not requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<const ::k3::k3tchup::state&>()); }) \
+        {                                                                                                            \
+            const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                                       \
+                ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                                 \
+                    constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval {                      \
+                        auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                     \
+                        (PACKET)(_k3_k3tchup_state_);                                                                \
+                        return ::k3::k3tchup::detail::state_accessor::sizes(_k3_k3tchup_state_);                     \
+                    }();                                                                                             \
+                    auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                         \
+                    (PACKET)(_k3_k3tchup_state_);                                                                    \
+                    return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_);              \
+                }());                                                                                                \
+            const ::k3::k3tchup::state _k3_k3tchup_rt_state_ = [&]() {                                               \
+                auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                             \
+                (PACKET)(_k3_k3tchup_state_);                                                                        \
+                return _k3_k3tchup_state_;                                                                           \
+            }();                                                                                                     \
+            ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_);             \
+        } else {                                                                                                     \
+            static_assert(false);                                                                                    \
+        }                                                                                                            \
+    }(std::type_identity<decltype(PACKET)>{})
+
 #endif // K3_K3TCHUP_MACROS_HPP
