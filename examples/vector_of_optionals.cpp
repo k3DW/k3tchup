@@ -84,17 +84,26 @@ TEST("vector of optionals", "compile-time manual iteration") {
   one_element(std::integral_constant<std::size_t, 2>{});
 }
 
+// In this test, we want an entire sequence of checks to execute at compile-time,
+// independently of those checks later executing at run-time. In this case, a
+// lambda that accepts an lvalue `k3::k3tchup::state` is used in `EXPECT_THAT`.
+// Doing it this way, we don't need to worry about subsequent checks not having
+// any knowledge of a previous check failing, since the entire body of the lambda
+// is fully executed at compile-time or at run-time, rather than each individual
+// check.
 TEST("vector of optionals", "stateful checks") {
-  EXPECT_THAT([](k3::k3tchup::state& s) {
+  EXPECT_THAT([](auto& state) {
     for (const auto& o : vec()) {
       [&] {
-        ASSERT(s, o.has_value()) << "optional did not have a value";
-        EXPECT(s, *o == 5) << "optional's value was not 5";
+        ASSERT(state, o.has_value()) << "optional did not have a value";
+        EXPECT(state, *o == 5) << "optional's value was not 5";
       }();
     }
   });
 }
 
+// This test is equivalent to the above test, but it introduces the state
+// variable via the `TEST_CONSTEXPR` macro instead.
 TEST_CONSTEXPR("vector of optionals", "stateful test", state) {
   for (const auto& o : vec()) {
     [&] {
