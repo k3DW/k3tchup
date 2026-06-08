@@ -25,8 +25,9 @@ add_library(k3_k3tchup STATIC
     src/k3/k3tchup/detail/context.cpp
     src/k3/k3tchup/detail/error.cpp
     src/k3/k3tchup/detail/fixture.cpp
-    src/k3/k3tchup/detail/test.cpp
     src/k3/k3tchup/detail/result.cpp
+    src/k3/k3tchup/detail/state.cpp
+    src/k3/k3tchup/detail/test.cpp
 )
 add_library(k3::k3tchup ALIAS k3_k3tchup)
 target_sources(k3_k3tchup PUBLIC FILE_SET headers TYPE HEADERS FILES
@@ -35,6 +36,7 @@ target_sources(k3_k3tchup PUBLIC FILE_SET headers TYPE HEADERS FILES
     include/k3/k3tchup/assert.hpp
     include/k3/k3tchup/fixture.hpp
     include/k3/k3tchup/runner.hpp
+    include/k3/k3tchup/state.hpp
     include/k3/k3tchup/test.hpp
     include/k3/k3tchup/detail/context.hpp
     include/k3/k3tchup/detail/error.hpp
@@ -42,6 +44,7 @@ target_sources(k3_k3tchup PUBLIC FILE_SET headers TYPE HEADERS FILES
     include/k3/k3tchup/detail/hash.hpp
     include/k3/k3tchup/detail/macros.hpp
     include/k3/k3tchup/detail/result.hpp
+    include/k3/k3tchup/detail/state.hpp
     include/k3/k3tchup/detail/stateful_tmp.hpp
     include/k3/k3tchup/detail/test.hpp
     include/k3/k3tchup/detail/void_assigner.hpp

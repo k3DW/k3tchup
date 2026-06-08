@@ -83,3 +83,14 @@ TEST("vector of optionals", "compile-time manual iteration") {
   one_element(std::integral_constant<std::size_t, 1>{});
   one_element(std::integral_constant<std::size_t, 2>{});
 }
+
+TEST("vector of optionals", "stateful checks") {
+  EXPECT_THAT_2([](k3::k3tchup::state& s) {
+    for (const auto& o : vec()) {
+      [&] {
+        ASSERT_DEDUCE(s, o.has_value());
+        EXPECT_DEDUCE(s, *o == 5);
+      }();
+    }
+  });
+}

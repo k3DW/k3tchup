@@ -7,7 +7,9 @@
 
 #include <cstddef>
 #include <k3/k3tchup/detail/context.hpp>
+#include <k3/k3tchup/detail/error.hpp>
 #include <k3/k3tchup/detail/macros.hpp>
+#include <k3/k3tchup/detail/state.hpp>
 
 #define ASSERT_COMPILE_TIME(CONDITION)         K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 1, 0, 1)
 #define ASSERT_RUN_TIME(CONDITION)             K3_K3TCHUP_GENERIC_CHECK_(CONDITION, 0, 1, 1)
@@ -34,6 +36,47 @@
     {                                                        \
         ::k3::k3tchup::detail::trace_context _k3tchup_ctx_;  \
         (PACKET)();                                          \
+    } static_assert(true, "require semicolon")
+
+#define ASSERT_DEDUCE(S, CONDITION)                       \
+    switch (0) case 0: default:                           \
+    if (                                                  \
+        ::k3::k3tchup::detail::state_accessor::check(S,   \
+            ::k3::k3tchup::detail::error_fatality::fatal, \
+            static_cast<bool>(CONDITION))                 \
+    ) {}                                                  \
+    else                                                  \
+      return
+
+#define EXPECT_DEDUCE(S, CONDITION)                           \
+    switch (0) case 0: default:                               \
+    if (                                                      \
+        ::k3::k3tchup::detail::state_accessor::check(S,       \
+            ::k3::k3tchup::detail::error_fatality::non_fatal, \
+            static_cast<bool>(CONDITION))                     \
+    ) {}                                                      \
+    else
+
+#define EXPECT_THAT_2(PACKET)                                                               \
+    {                                                                                       \
+        ::k3::k3tchup::detail::trace_context _k3tchup_ctx_;                                 \
+        const ::k3::k3tchup::state ct_state =                                               \
+            ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {            \
+                constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval { \
+                    auto s = ::k3::k3tchup::detail::state_accessor::make();                 \
+                    (PACKET)(s);                                                            \
+                    return ::k3::k3tchup::detail::state_accessor::sizes(s);                 \
+                }();                                                                        \
+                auto s = ::k3::k3tchup::detail::state_accessor::make();                     \
+                (PACKET)(s);                                                                \
+                return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(s);          \
+            }());                                                                           \
+        const ::k3::k3tchup::state rt_state = [&]() {                                       \
+            auto s = ::k3::k3tchup::detail::state_accessor::make();                         \
+            (PACKET)(s);                                                                    \
+            return s;                                                                       \
+        }();                                                                                \
+        ::k3::k3tchup::detail::state_accessor::report(ct_state, rt_state);                  \
     } static_assert(true, "require semicolon")
 
 #endif // K3_K3TCHUP_ASSERT_HPP
