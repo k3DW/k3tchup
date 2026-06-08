@@ -125,18 +125,6 @@
 
 
 
-namespace k3::k3tchup::detail {
-
-template <class F>
-constexpr void exec_packet(F f) {
-    // This condition can't be with SFINAE, otherwise K3_K3TCHUP_EXEC_PACKET_ doesn't work
-    if constexpr (std::invocable<F>) {
-        std::forward<F>(f)();
-    }
-}
-
-} // namespace k3::k3tchup::detail
-
 #define K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET)                                                \
     const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                          \
         ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                    \
@@ -159,7 +147,7 @@ constexpr void exec_packet(F f) {
 #define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                                    \
     [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {                    \
         if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                                          \
-            ::k3::k3tchup::detail::exec_packet(PACKET);                                                    \
+            (PACKET)();                                                                                    \
         } else if constexpr (                                                                              \
             requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<::k3::k3tchup::state&>()); }) \
         {                                                                                                  \
