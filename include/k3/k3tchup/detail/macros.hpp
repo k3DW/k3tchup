@@ -10,8 +10,10 @@
 #include <k3/k3tchup/detail/context.hpp>
 #include <k3/k3tchup/detail/error.hpp>
 #include <k3/k3tchup/detail/hash.hpp>
+#include <k3/k3tchup/detail/state.hpp>
 #include <k3/k3tchup/detail/stateful_tmp.hpp>
 #include <k3/k3tchup/detail/void_assigner.hpp>
+#include <k3/k3tchup/state.hpp>
 
 #define K3_K3TCHUP_CAT_IMPL_(A, B) A ## B
 #define K3_K3TCHUP_CAT_(A, B) K3_K3TCHUP_CAT_IMPL_(A, B)
@@ -126,7 +128,7 @@
 namespace k3::k3tchup::detail {
 
 template <class F>
-constexpr void call_packet(F f) {
+constexpr void exec_packet(F f) {
     // This condition can't be with SFINAE, otherwise K3_K3TCHUP_EXEC_PACKET_ doesn't work
     if constexpr (std::invocable<F>) {
         std::forward<F>(f)();
@@ -135,31 +137,34 @@ constexpr void call_packet(F f) {
 
 } // namespace k3::k3tchup::detail
 
+#define K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET)                                                \
+    const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                          \
+        ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                    \
+            constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval {         \
+                auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();        \
+                (PACKET)(_k3_k3tchup_state_);                                                   \
+                return ::k3::k3tchup::detail::state_accessor::sizes(_k3_k3tchup_state_);        \
+            }();                                                                                \
+            auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();            \
+            (PACKET)(_k3_k3tchup_state_);                                                       \
+            return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_); \
+        }());                                                                                   \
+    const ::k3::k3tchup::state _k3_k3tchup_rt_state_ = [&]() {                                  \
+        auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                \
+        (PACKET)(_k3_k3tchup_state_);                                                           \
+        return _k3_k3tchup_state_;                                                              \
+    }();                                                                                        \
+    ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_)
+
 #define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                                              \
     [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {                              \
         if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                                                    \
-            ::k3::k3tchup::detail::call_packet(PACKET);                                                              \
+            ::k3::k3tchup::detail::exec_packet(PACKET);                                                              \
         } else if constexpr (                                                                                        \
             requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<::k3::k3tchup::state&>()); } and        \
             not requires { std::declval<_k3_k3tchup_packet_type_>()(std::declval<const ::k3::k3tchup::state&>()); }) \
         {                                                                                                            \
-            const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                                       \
-                ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                                 \
-                    constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval {                      \
-                        auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                     \
-                        (PACKET)(_k3_k3tchup_state_);                                                                \
-                        return ::k3::k3tchup::detail::state_accessor::sizes(_k3_k3tchup_state_);                     \
-                    }();                                                                                             \
-                    auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                         \
-                    (PACKET)(_k3_k3tchup_state_);                                                                    \
-                    return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_);              \
-                }());                                                                                                \
-            const ::k3::k3tchup::state _k3_k3tchup_rt_state_ = [&]() {                                               \
-                auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                             \
-                (PACKET)(_k3_k3tchup_state_);                                                                        \
-                return _k3_k3tchup_state_;                                                                           \
-            }();                                                                                                     \
-            ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_);             \
+            K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                                                \
         } else {                                                                                                     \
             static_assert(false);                                                                                    \
         }                                                                                                            \

@@ -94,3 +94,12 @@ TEST("vector of optionals", "stateful checks") {
     }
   });
 }
+
+TEST_CONSTEXPR("vector of optionals", "stateful test", state) {
+  for (const auto& o : vec()) {
+    [&] {
+      ASSERT(state, o.has_value()) << "optional did not have a value";
+      EXPECT(state, *o == 5) << "optional's value was not 5";
+    }();
+  }
+}
