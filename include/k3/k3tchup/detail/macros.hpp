@@ -25,6 +25,11 @@
 #define K3_K3TCHUP_IS_EMPTY_(...) \
     K3_K3TCHUP_IS_EMPTY_IMPL_(__VA_OPT__(0,) 1)
 
+#define K3_K3TCHUP_SELECT_IMPL_0_(TRUE, FALSE) FALSE
+#define K3_K3TCHUP_SELECT_IMPL_1_(TRUE, FALSE) TRUE
+#define K3_K3TCHUP_SELECT_(BOOL, TRUE, FALSE) \
+    K3_K3TCHUP_EVAL_BOOL_(SELECT_IMPL, BOOL)(TRUE, FALSE)
+
 
 
 // https://developercommunity.visualstudio.com/t/Constexpr-skipping-evaluation-of-switch/11094500

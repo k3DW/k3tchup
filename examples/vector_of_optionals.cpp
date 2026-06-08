@@ -55,7 +55,7 @@ TEST("vector of optionals", "run-time short-circuit alt") {
 // _only_ twice. This sacrifices message readability, since this example doesn't
 // have any specifics for what went wrong upon hitting an error.
 TEST("vector of optionals", "compile-time basic") {
-  EXPECT_COMPILE_AND_RUN_TIME(([]() -> bool {
+  EXPECT(([]() -> bool {
     bool success = true;
     for (const std::optional<int>& x : vec()) {
       success = success && x.has_value();
@@ -76,8 +76,8 @@ TEST("vector of optionals", "compile-time basic") {
 // compile-time error previously in the same function.
 TEST("vector of optionals", "compile-time manual iteration") {
   auto one_element = []<std::size_t I>(std::integral_constant<std::size_t, I>) {
-    ASSERT_COMPILE_AND_RUN_TIME(vec()[I].has_value()) << "optional did not have a value";
-    EXPECT_COMPILE_AND_RUN_TIME(*vec()[I] == 5) << "optional's value was not 5, it was " << *vec()[I];
+    ASSERT(vec()[I].has_value()) << "optional did not have a value";
+    EXPECT(*vec()[I] == 5) << "optional's value was not 5, it was " << *vec()[I];
   };
   one_element(std::integral_constant<std::size_t, 0>{});
   one_element(std::integral_constant<std::size_t, 1>{});
@@ -88,8 +88,8 @@ TEST("vector of optionals", "stateful checks") {
   EXPECT_THAT([](k3::k3tchup::state& s) {
     for (const auto& o : vec()) {
       [&] {
-        ASSERT_DEDUCE(s, o.has_value()) << "optional did not have a value";
-        EXPECT_DEDUCE(s, *o == 5) << "optional's value was not 5";
+        ASSERT(s, o.has_value()) << "optional did not have a value";
+        EXPECT(s, *o == 5) << "optional's value was not 5";
       }();
     }
   });
