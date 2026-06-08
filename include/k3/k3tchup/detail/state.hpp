@@ -54,6 +54,18 @@ struct state_accessor {
         return b;
     }
 
+    struct message_context {
+        std::string* str;
+        constexpr message_context operator<<(std::string_view sv) const {
+            str->append(sv);
+            return *this;
+        }
+    };
+
+    static constexpr message_context make_message_context(state& s) {
+        return message_context{ &s.errors.value().back().message };
+    }
+
     static constexpr flat_state_sizes sizes(const state& s) {
         std::size_t total_chars = 0;
         for (const auto& e : s.errors.value()) {

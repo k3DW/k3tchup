@@ -38,24 +38,27 @@
         (PACKET)();                                          \
     } static_assert(true, "require semicolon")
 
-#define ASSERT_DEDUCE(S, CONDITION)                       \
-    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                    \
-    if (                                                  \
-        ::k3::k3tchup::detail::state_accessor::check(S,   \
-            ::k3::k3tchup::detail::error_fatality::fatal, \
-            static_cast<bool>(CONDITION))                 \
-    ) {}                                                  \
-    else                                                  \
-      return
+#define ASSERT_DEDUCE(S, CONDITION)                                        \
+    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                                     \
+    if (                                                                   \
+        ::k3::k3tchup::detail::state_accessor::check(S,                    \
+            ::k3::k3tchup::detail::error_fatality::fatal,                  \
+            static_cast<bool>(CONDITION))                                  \
+    ) {}                                                                   \
+    else                                                                   \
+        return ::k3::k3tchup::detail::void_assigner{} =                    \
+            ::k3::k3tchup::detail::state_accessor::make_message_context(S)
 
-#define EXPECT_DEDUCE(S, CONDITION)                           \
-    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                        \
-    if (                                                      \
-        ::k3::k3tchup::detail::state_accessor::check(S,       \
-            ::k3::k3tchup::detail::error_fatality::non_fatal, \
-            static_cast<bool>(CONDITION))                     \
-    ) {}                                                      \
-    else
+#define EXPECT_DEDUCE(S, CONDITION)                                        \
+    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                                     \
+    if (                                                                   \
+        ::k3::k3tchup::detail::state_accessor::check(S,                    \
+            ::k3::k3tchup::detail::error_fatality::non_fatal,              \
+            static_cast<bool>(CONDITION))                                  \
+    ) {}                                                                   \
+    else                                                                   \
+        ::k3::k3tchup::detail::void_assigner{} =                           \
+            ::k3::k3tchup::detail::state_accessor::make_message_context(S)
 
 #define EXPECT_THAT_2(PACKET)                                                               \
     {                                                                                       \
