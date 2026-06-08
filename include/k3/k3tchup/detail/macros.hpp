@@ -39,10 +39,16 @@
 #define K3_K3TCHUP_EVAL_CONDITION_0_(CONDITION) (true)
 #define K3_K3TCHUP_EVAL_CONDITION_1_(CONDITION) (CONDITION)
 
-#define K3_K3TCHUP_ERROR_FATALITY_0_(RESULT) \
+#define K3_K3TCHUP_MAKE_ERROR_0_(RESULT) \
     ::k3::k3tchup::detail::void_assigner{} = ::k3::k3tchup::detail::context::add_error(RESULT, ::k3::k3tchup::detail::error_fatality::non_fatal)
-#define K3_K3TCHUP_ERROR_FATALITY_1_(RESULT) \
+#define K3_K3TCHUP_MAKE_ERROR_1_(RESULT) \
     return ::k3::k3tchup::detail::void_assigner{} = ::k3::k3tchup::detail::context::add_error(RESULT, ::k3::k3tchup::detail::error_fatality::fatal)
+
+#define K3_K3TCHUP_ERROR_FATALITY_0_() ::k3::k3tchup::detail::error_fatality::non_fatal
+#define K3_K3TCHUP_ERROR_FATALITY_1_() ::k3::k3tchup::detail::error_fatality::fatal
+
+#define K3_K3TCHUP_ERROR_FATALITY_RETURN_0_()
+#define K3_K3TCHUP_ERROR_FATALITY_RETURN_1_() return
 
 #define K3_K3TCHUP_CHECK_CT_ERROR_0_(CONDITION, ...) \
     return (CONDITION)
@@ -87,9 +93,27 @@
     K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION,                        \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                \
-        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),             \
+        K3_K3TCHUP_EVAL_BOOL_(MAKE_ERROR, IS_FATAL),                 \
         K3_K3TCHUP_EVAL_BOOL_(CHECK_CT_ERROR, IS_FATAL),             \
         K3_K3TCHUP_UNIQUE_IDENTIFIER_(_k3_k3tchup_)                  \
+    )
+
+
+
+#define K3_K3TCHUP_GENERIC_STATEFUL_CHECK_IMPL_(STATE, CONDITION, ERROR_FATALITY, ERROR_FATALITY_RETURN) \
+    K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_                                                                   \
+    if (                                                                                                 \
+        ::k3::k3tchup::detail::state_accessor::check(                                                    \
+            STATE, ERROR_FATALITY(), static_cast<bool>(CONDITION))                                       \
+    ) {}                                                                                                 \
+    else                                                                                                 \
+        ERROR_FATALITY_RETURN() ::k3::k3tchup::detail::void_assigner{} =                                 \
+            ::k3::k3tchup::detail::state_accessor::make_message_context(STATE)
+
+#define K3_K3TCHUP_GENERIC_STATEFUL_CHECK_(STATE, CONDITION, IS_FATAL) \
+    K3_K3TCHUP_GENERIC_STATEFUL_CHECK_IMPL_(STATE, CONDITION,          \
+        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),               \
+        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY_RETURN, IS_FATAL)         \
     )
 
 #endif // K3_K3TCHUP_MACROS_HPP
