@@ -25,17 +25,9 @@ struct state_error {
     error_fatality fatality;
     std::string message{};
     std::source_location location;
-    friend constexpr bool operator==(const state_error& lhs, const state_error& rhs) {
-        return
-            lhs.index == rhs.index and
-            lhs.fatality == rhs.fatality and
-            lhs.message == rhs.message and
-            lhs.location.line() == rhs.location.line() and
-            lhs.location.column() == rhs.location.column() and
-            std::string_view(lhs.location.file_name()) == std::string_view(rhs.location.file_name()) and
-            std::string_view(lhs.location.function_name()) == std::string_view(rhs.location.function_name());
-    }
 };
+
+bool operator==(const state_error& lhs, const state_error& rhs);
 
 } // namespace detail
 
