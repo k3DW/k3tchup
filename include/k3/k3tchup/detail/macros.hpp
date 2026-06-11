@@ -151,7 +151,7 @@
         } else if constexpr (std::invocable<_k3_k3tchup_packet_type_, ::k3::k3tchup::state&>) { \
             K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                           \
         } else {                                                                                \
-            static_assert(false);                                                               \
+            static_assert(std::same_as<_k3_k3tchup_packet_type_, void>);                        \
         }                                                                                       \
     }(std::type_identity<decltype(PACKET)>{})
 
