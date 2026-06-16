@@ -34,6 +34,10 @@ bool operator==(const state_error& lhs, const state_error& rhs);
 class state {
     friend struct detail::state_accessor;
     constexpr state() = default;
+    constexpr state(const state&) = default;
+    constexpr state(state&&) = default;
+    constexpr state& operator=(const state&) = default;
+    constexpr state& operator=(state&&) = default;
     std::size_t num_checks = 0;
     std::optional<std::vector<detail::state_error>> errors{ std::in_place };
 };

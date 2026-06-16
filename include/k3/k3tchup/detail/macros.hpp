@@ -137,11 +137,8 @@
             (PACKET)(_k3_k3tchup_state_);                                                       \
             return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_); \
         }());                                                                                   \
-    const ::k3::k3tchup::state _k3_k3tchup_rt_state_ = [&]() {                                  \
-        auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();                \
-        (PACKET)(_k3_k3tchup_state_);                                                           \
-        return _k3_k3tchup_state_;                                                              \
-    }();                                                                                        \
+    ::k3::k3tchup::state _k3_k3tchup_rt_state_ = ::k3::k3tchup::detail::state_accessor::make(); \
+    (PACKET)(_k3_k3tchup_rt_state_);                                                            \
     ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_)
 
 #define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                         \
