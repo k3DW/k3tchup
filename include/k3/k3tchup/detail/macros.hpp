@@ -89,12 +89,12 @@
                 if constexpr (::k3::k3tchup::detail::has_error<_k3_k3tchup_type_parameter_>) {                 \
                     return true;                                                                               \
                 } else {                                                                                       \
-                    CHECK_CT_ERROR(MAKE_CT(bool{(CONDITION)}), _k3_k3tchup_type_parameter_);                   \
+                    CHECK_CT_ERROR(static_cast<bool>(CONDITION), _k3_k3tchup_type_parameter_);                 \
                 }                                                                                              \
             }(std::integral_constant<std::size_t,                                                              \
                 ::k3::k3tchup::detail::function_name_hash(std::source_location::current().function_name())>{}) \
             ),                                                                                                 \
-            MAKE_RT(bool{(CONDITION)})                                                                         \
+            MAKE_RT(static_cast<bool>(CONDITION))                                                              \
         );                                                                                                     \
         UNIQUE_ID                                                                                              \
     ) {                                                                                                        \
