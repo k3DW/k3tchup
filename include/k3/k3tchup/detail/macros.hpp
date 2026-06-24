@@ -68,39 +68,48 @@
 #define K3_K3TCHUP_ERROR_FATALITY_RETURN_0_()
 #define K3_K3TCHUP_ERROR_FATALITY_RETURN_1_() return
 
-#define K3_K3TCHUP_CHECK_CT_ERROR_0_(CONDITION, ...) \
-    return (CONDITION)
-#define K3_K3TCHUP_CHECK_CT_ERROR_1_(CONDITION, TYPE)                      \
-    if constexpr (CONDITION) {                                             \
-        return true;                                                       \
-    } else {                                                               \
-        static_assert(sizeof(::k3::k3tchup::detail::set_error_for<TYPE>)); \
-        return false;                                                      \
-    }                                                                      \
-    static_assert(true, "require semicolon")
+
+
+namespace k3::k3tchup::detail {
+
+template <error_fatality fatality, class F, class T>
+consteval bool check_compile_time_error(F, T) {
+    if constexpr (has_error<T>) {
+        return true;
+    } else {
+        if constexpr (fatality == error_fatality::non_fatal) {
+            return F{}();
+        } else if constexpr (fatality == error_fatality::fatal) {
+            if constexpr (F{}()) {
+                return true;
+            } else {
+                static_assert(sizeof(set_error_for<T>));
+                return false;
+            }
+        }
+    }
+}
+
+} // namespace k3::k3tchup::detail
 
 
 
-#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, CHECK_CT_ERROR, UNIQUE_ID)     \
-    switch(0) case 0: default:                                                                                 \
-    if (                                                                                                       \
-        const auto UNIQUE_ID = ::k3::k3tchup::detail::context::check(                                          \
-            MAKE_CT([&]<class _k3_k3tchup_type_parameter_>(_k3_k3tchup_type_parameter_) consteval {            \
-                if constexpr (::k3::k3tchup::detail::has_error<_k3_k3tchup_type_parameter_>) {                 \
-                    return true;                                                                               \
-                } else {                                                                                       \
-                    CHECK_CT_ERROR(static_cast<bool>(CONDITION), _k3_k3tchup_type_parameter_);                 \
-                }                                                                                              \
-            }(std::integral_constant<std::size_t,                                                              \
-                ::k3::k3tchup::detail::function_name_hash(std::source_location::current().function_name())>{}) \
-            ),                                                                                                 \
-            MAKE_RT(static_cast<bool>(CONDITION))                                                              \
-        );                                                                                                     \
-        UNIQUE_ID                                                                                              \
-    ) {                                                                                                        \
-        K3_K3TCHUP_IGNORE_EXPRESSION_(CONDITION);                                                              \
-    }                                                                                                          \
-    else                                                                                                       \
+#define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, MAKE_ERROR, ERROR_FATALITY, UNIQUE_ID) \
+    switch(0) case 0: default:                                                                             \
+    if (                                                                                                   \
+        const auto UNIQUE_ID = ::k3::k3tchup::detail::context::check(                                      \
+            MAKE_CT(::k3::k3tchup::detail::check_compile_time_error<ERROR_FATALITY()>(                     \
+                []() consteval { return static_cast<bool>(CONDITION); },                                   \
+                std::integral_constant<std::size_t, ::k3::k3tchup::detail::function_name_hash(             \
+                    std::source_location::current().function_name())>{})                                   \
+            ),                                                                                             \
+            MAKE_RT(static_cast<bool>(CONDITION))                                                          \
+        );                                                                                                 \
+        UNIQUE_ID                                                                                          \
+    ) {                                                                                                    \
+        K3_K3TCHUP_IGNORE_EXPRESSION_(CONDITION);                                                          \
+    }                                                                                                      \
+    else                                                                                                   \
         MAKE_ERROR(UNIQUE_ID)
 
 #if defined(__clang__) && __clang_major__ >= 22
@@ -114,7 +123,7 @@
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_CT),                \
         K3_K3TCHUP_EVAL_BOOL_(EVAL_CONDITION, IS_RT),                \
         K3_K3TCHUP_EVAL_BOOL_(MAKE_ERROR, IS_FATAL),                 \
-        K3_K3TCHUP_EVAL_BOOL_(CHECK_CT_ERROR, IS_FATAL),             \
+        K3_K3TCHUP_EVAL_BOOL_(ERROR_FATALITY, IS_FATAL),             \
         K3_K3TCHUP_UNIQUE_IDENTIFIER_(_k3_k3tchup_)                  \
     )
 
