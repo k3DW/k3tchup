@@ -41,17 +41,6 @@
 #define K3_K3TCHUP_CONSTEXPR_ELSE_BLOCKER_ switch (0) case 0: default:
 #endif
 
-// https://developercommunity.visualstudio.com/t/Compiler-emits-erroneous-C4189-in-lambda/11110588
-#ifdef _MSC_VER
-#define K3_K3TCHUP_IGNORE_EXPRESSION_(CONDITION) \
-    if constexpr (false) {                       \
-        (void)(CONDITION);                       \
-    } static_assert(true, "require semicolon")
-#else
-#define K3_K3TCHUP_IGNORE_EXPRESSION_(CONDITION) \
-    static_assert(true, "require semicolon")
-#endif
-
 
 
 #define K3_K3TCHUP_EVAL_CONDITION_0_(CONDITION) (true)
@@ -101,9 +90,7 @@ consteval bool check_compile_time_error(F, T) {
             MAKE_RT(static_cast<bool>(CONDITION))                                                          \
         );                                                                                                 \
         UNIQUE_ID                                                                                          \
-    ) {                                                                                                    \
-        K3_K3TCHUP_IGNORE_EXPRESSION_(CONDITION);                                                          \
-    }                                                                                                      \
+    ) {}                                                                                                   \
     else                                                                                                   \
         FATALITY_RETURN() ::k3::k3tchup::detail::void_assigner{} =                                         \
             ::k3::k3tchup::detail::context::add_error(UNIQUE_ID, FATALITY())
