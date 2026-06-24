@@ -85,7 +85,7 @@
     switch(0) case 0: default:                                                                                 \
     if (                                                                                                       \
         const auto UNIQUE_ID = ::k3::k3tchup::detail::context::check(                                          \
-            [&]<class _k3_k3tchup_type_parameter_>(_k3_k3tchup_type_parameter_) consteval {                    \
+            MAKE_CT([&]<class _k3_k3tchup_type_parameter_>(_k3_k3tchup_type_parameter_) consteval {            \
                 if constexpr (::k3::k3tchup::detail::has_error<_k3_k3tchup_type_parameter_>) {                 \
                     return true;                                                                               \
                 } else {                                                                                       \
@@ -93,7 +93,7 @@
                 }                                                                                              \
             }(std::integral_constant<std::size_t,                                                              \
                 ::k3::k3tchup::detail::function_name_hash(std::source_location::current().function_name())>{}) \
-            ,                                                                                                  \
+            ),                                                                                                 \
             MAKE_RT(bool{(CONDITION)})                                                                         \
         );                                                                                                     \
         UNIQUE_ID                                                                                              \
