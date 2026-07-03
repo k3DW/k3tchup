@@ -80,6 +80,10 @@ struct state_accessor {
     template <flat_state_sizes sizes>
     static constexpr flat_state<sizes> serialize(const state& s) {
         flat_state<sizes> errors{};
+        if constexpr (sizes.count == 0 && sizes.total_chars == 0) {
+            return errors;
+        }
+
         errors.num_checks = s.num_checks;
         auto entry_it = errors.entries.begin();
         auto message_it = errors.messages.begin();

@@ -92,7 +92,7 @@ TEST("vector of optionals", "compile-time manual iteration") {
 // is fully executed at compile-time or at run-time, rather than each individual
 // check.
 TEST("vector of optionals", "stateful checks") {
-  EXPECT_THAT([](auto& state) {
+  EXPECT_THAT([](k3::k3tchup::state& state) {
     for (const auto& o : vec()) {
       [&] {
         ASSERT(state, o.has_value()) << "optional did not have a value";
