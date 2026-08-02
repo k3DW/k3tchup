@@ -130,123 +130,22 @@ consteval bool check_compile_time_error(F, T) {
 
 
 
-#if defined(__clang__)
-// Workaround for the Clang bug where you can't call a
-// generic lambda from within a template at compile-time.
-// https://github.com/llvm/llvm-project/issues/35052
-// https://github.com/llvm/llvm-project/issues/205218
-
-namespace k3::k3tchup::detail::clang_workaround {
-
-template <auto Value>
-using constant = std::integral_constant<std::remove_cvref_t<decltype(Value)>, Value>;
-
-struct converter {
-    template <class T>
-    constexpr operator T() const {
-        return T{};
-    }
-};
-
-template <class F>
-constexpr void invoke_packet_nullary(F f) {
-    if constexpr (std::invocable<F&&>) {
-        std::move(f)();
-    }
-}
-
-template <class F>
-constexpr void invoke_packet_stateful(F f, state& s) {
-    if constexpr (std::invocable<F&&, state&>) {
-        std::move(f)(s);
-    }
-}
-
-template <class F>
-requires (not std::invocable<F&&, state&>)
-constexpr int get_packet_sizes(F&&) {
-    return 0;
-}
-
-template <class F>
-requires std::invocable<F&&, state&>
-consteval flat_state_sizes get_packet_sizes(F&& f) {
-    auto s = state_accessor::make();
-    std::forward<F>(f)(s);
-    return state_accessor::sizes(s);
-}
-
-template <int dummy, class F>
-requires (not std::invocable<F&&, state&>)
-constexpr flat_state<flat_state_sizes{}> packet_serialize(constant<dummy>, F&&) {
-    return state_accessor::serialize<flat_state_sizes{}>(state_accessor::make());
-}
-
-template <flat_state_sizes sizes, class F>
-requires std::invocable<F&&, state&>
-consteval flat_state<sizes> packet_serialize(constant<sizes>, F&& f) {
-    auto s = state_accessor::make();
-    std::forward<F>(f)(s);
-    return state_accessor::serialize<sizes>(s);
-}
-
-} // namespace k3::k3tchup::detail::clang_workaround
-
-#define K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET)                                                    \
-    constexpr auto _k3_k3tchup_sizes_ =                                                             \
-        __builtin_constant_p(::k3::k3tchup::detail::clang_workaround::get_packet_sizes(PACKET))     \
-        ? ::k3::k3tchup::detail::clang_workaround::get_packet_sizes(PACKET)                         \
-        : ::k3::k3tchup::detail::clang_workaround::converter{};                                     \
-    const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                              \
-        ::k3::k3tchup::detail::state_accessor::deserialize(                                         \
-            ::k3::k3tchup::detail::clang_workaround::packet_serialize(                              \
-                ::k3::k3tchup::detail::clang_workaround::constant<_k3_k3tchup_sizes_>{}, PACKET)    \
-        );                                                                                          \
-    ::k3::k3tchup::state _k3_k3tchup_rt_state_ = ::k3::k3tchup::detail::state_accessor::make();     \
-    ::k3::k3tchup::detail::clang_workaround::invoke_packet_stateful(PACKET, _k3_k3tchup_rt_state_); \
-    ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_)
-
-#define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                         \
-    {                                                                                           \
-        using _k3_k3tchup_packet_type_ = decltype(PACKET);                                      \
-        if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                               \
-            ::k3::k3tchup::detail::clang_workaround::invoke_packet_nullary(PACKET);             \
-        } else if constexpr (std::invocable<_k3_k3tchup_packet_type_, ::k3::k3tchup::state&>) { \
-            K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                           \
-        } else {                                                                                \
-            throw;                                                                              \
-        }                                                                                       \
+#define K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET)                                                     \
+    {                                                                                                \
+        const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                           \
+            ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                     \
+                constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval {          \
+                    auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();         \
+                    (PACKET)(_k3_k3tchup_state_);                                                    \
+                    return ::k3::k3tchup::detail::state_accessor::sizes(_k3_k3tchup_state_);         \
+                }();                                                                                 \
+                auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();             \
+                (PACKET)(_k3_k3tchup_state_);                                                        \
+                return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_);  \
+            }());                                                                                    \
+        ::k3::k3tchup::state _k3_k3tchup_rt_state_ = ::k3::k3tchup::detail::state_accessor::make();  \
+        (PACKET)(_k3_k3tchup_rt_state_);                                                             \
+        ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_); \
     } static_assert(true, "require semicolon")
-
-#else // ^^^ defined(__clang__) / vvv !defined(__clang__)
-
-#define K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET)                                                \
-    const ::k3::k3tchup::state _k3_k3tchup_ct_state_ =                                          \
-        ::k3::k3tchup::detail::state_accessor::deserialize([&]() consteval {                    \
-            constexpr ::k3::k3tchup::detail::flat_state_sizes sizes = [&]() consteval {         \
-                auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();        \
-                (PACKET)(_k3_k3tchup_state_);                                                   \
-                return ::k3::k3tchup::detail::state_accessor::sizes(_k3_k3tchup_state_);        \
-            }();                                                                                \
-            auto _k3_k3tchup_state_ = ::k3::k3tchup::detail::state_accessor::make();            \
-            (PACKET)(_k3_k3tchup_state_);                                                       \
-            return ::k3::k3tchup::detail::state_accessor::serialize<sizes>(_k3_k3tchup_state_); \
-        }());                                                                                   \
-    ::k3::k3tchup::state _k3_k3tchup_rt_state_ = ::k3::k3tchup::detail::state_accessor::make(); \
-    (PACKET)(_k3_k3tchup_rt_state_);                                                            \
-    ::k3::k3tchup::detail::state_accessor::report(_k3_k3tchup_ct_state_, _k3_k3tchup_rt_state_)
-
-#define K3_K3TCHUP_EXEC_PACKET_(PACKET)                                                         \
-    [&]<class _k3_k3tchup_packet_type_>(std::type_identity<_k3_k3tchup_packet_type_>) {         \
-        if constexpr (std::invocable<_k3_k3tchup_packet_type_>) {                               \
-            (PACKET)();                                                                         \
-        } else if constexpr (std::invocable<_k3_k3tchup_packet_type_, ::k3::k3tchup::state&>) { \
-            K3_K3TCHUP_EXEC_PACKET_STATEFUL_(PACKET);                                           \
-        } else {                                                                                \
-            static_assert(std::same_as<_k3_k3tchup_packet_type_, void>);                        \
-        }                                                                                       \
-    }(std::type_identity<decltype(PACKET)>{})
-
-#endif // defined(__clang__)
 
 #endif // K3_K3TCHUP_MACROS_HPP

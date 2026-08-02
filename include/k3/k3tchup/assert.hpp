@@ -31,13 +31,28 @@
 
 
 
+namespace k3::k3tchup::detail {
+
+template <class F>
+void exec_packet(F packet) {
+    if constexpr (std::invocable<F>) {
+        (packet)();
+    } else if constexpr (std::invocable<F, state&>) {
+        K3_K3TCHUP_EXEC_PACKET_STATEFUL_(packet);
+    } else {
+        static_assert(std::same_as<F, void>);
+    }
+}
+
+} // namespace k3::k3tchup::detail
+
 // ASSERT_THAT does not ignore its internal non-fatal errors,
 // and treats them as fatal errors.
 #define ASSERT_THAT(PACKET)                                                                       \
     {                                                                                             \
         ::k3::k3tchup::detail::trace_context _k3_k3tchup_ctx_;                                    \
         const std::size_t _k3_k3tchup_starting_ = ::k3::k3tchup::detail::context::total_errors(); \
-        K3_K3TCHUP_EXEC_PACKET_(PACKET);                                                          \
+        ::k3::k3tchup::detail::exec_packet(PACKET);                                               \
         const std::size_t _k3_k3tchup_ending_ = ::k3::k3tchup::detail::context::total_errors();   \
         if (_k3_k3tchup_ending_ != _k3_k3tchup_starting_)                                         \
             return;                                                                               \
@@ -47,7 +62,7 @@
 #define EXPECT_THAT(PACKET)                                    \
     {                                                          \
         ::k3::k3tchup::detail::trace_context _k3_k3tchup_ctx_; \
-        K3_K3TCHUP_EXEC_PACKET_(PACKET);                       \
+        ::k3::k3tchup::detail::exec_packet(PACKET);            \
     } static_assert(true, "require semicolon")
 
 #endif // K3_K3TCHUP_ASSERT_HPP
