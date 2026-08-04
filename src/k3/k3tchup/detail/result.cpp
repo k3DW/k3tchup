@@ -2,10 +2,11 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#include <k3/k3tchup.hpp>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include <k3/k3tchup/detail/error.hpp>
+#include <k3/k3tchup/detail/result.hpp>
 
 namespace k3::k3tchup::detail {
 

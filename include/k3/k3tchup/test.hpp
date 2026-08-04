@@ -9,8 +9,10 @@
 #include <type_traits>
 #include <k3/k3tchup/detail/fixture.hpp>
 #include <k3/k3tchup/detail/hash.hpp>
+#include <k3/k3tchup/detail/macros.hpp>
 #include <k3/k3tchup/detail/test.hpp>
 #include <k3/k3tchup/runner.hpp>
+#include <k3/k3tchup/state.hpp>
 
 #define TEST(FIXTURE_NAME, NAME)                                                                            \
     template <std::size_t hash>                                                                             \

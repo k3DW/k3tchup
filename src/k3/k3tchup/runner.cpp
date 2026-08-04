@@ -2,12 +2,15 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
-#include <k3/k3tchup.hpp>
 #include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <optional>
 #include <string_view>
+#include <k3/k3tchup/detail/fixture.hpp>
+#include <k3/k3tchup/detail/result.hpp>
+#include <k3/k3tchup/detail/test.hpp>
+#include <k3/k3tchup/runner.hpp>
 
 namespace k3::k3tchup {
 
