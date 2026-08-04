@@ -79,20 +79,20 @@ consteval bool check_compile_time_error(F, T) {
 
 
 #define K3_K3TCHUP_GENERIC_CHECK_IMPL_(CONDITION, MAKE_CT, MAKE_RT, FATALITY, FATALITY_RETURN, UNIQUE_ID) \
-    switch(0) case 0: default:                                                                             \
-    if (                                                                                                   \
-        const auto UNIQUE_ID = ::k3::k3tchup::detail::context::check(                                      \
-            MAKE_CT(::k3::k3tchup::detail::check_compile_time_error<FATALITY()>(                           \
-                []() consteval { return static_cast<bool>(CONDITION); },                                   \
-                std::integral_constant<std::size_t, ::k3::k3tchup::detail::function_name_hash(             \
-                    std::source_location::current().function_name())>{})                                   \
-            ),                                                                                             \
-            MAKE_RT(static_cast<bool>(CONDITION))                                                          \
-        );                                                                                                 \
-        UNIQUE_ID                                                                                          \
-    ) {}                                                                                                   \
-    else                                                                                                   \
-        FATALITY_RETURN() ::k3::k3tchup::detail::void_assigner{} =                                         \
+    switch(0) case 0: default:                                                                            \
+    if (                                                                                                  \
+        const auto UNIQUE_ID = ::k3::k3tchup::detail::context::check(                                     \
+            MAKE_CT(::k3::k3tchup::detail::check_compile_time_error<FATALITY()>(                          \
+                []() consteval -> bool { return (CONDITION); },                                           \
+                std::integral_constant<std::size_t, ::k3::k3tchup::detail::function_name_hash(            \
+                    std::source_location::current().function_name())>{})                                  \
+            ),                                                                                            \
+            MAKE_RT(CONDITION)                                                                            \
+        );                                                                                                \
+        UNIQUE_ID                                                                                         \
+    ) {}                                                                                                  \
+    else                                                                                                  \
+        FATALITY_RETURN() ::k3::k3tchup::detail::void_assigner{} =                                        \
             ::k3::k3tchup::detail::context::add_error(UNIQUE_ID, FATALITY())
 
 #if defined(__clang__) && __clang_major__ >= 22
